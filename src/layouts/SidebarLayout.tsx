@@ -3,10 +3,10 @@ import Sidebar from "@components/Sidebar";
 
 const SidebarLayout = () => {
     return (
-        <main className="pr-[var(--sidebar-width)]">
+        <div className="flex justify-end">
             <Sidebar />
             <Outlet />
-        </main>
+        </div>
     );
 };
 

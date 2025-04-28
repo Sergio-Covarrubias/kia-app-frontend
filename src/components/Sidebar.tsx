@@ -10,24 +10,6 @@ import { LayoutDashboard } from "lucide-react";
 import { User } from "lucide-react";
 import { LogOut } from "lucide-react";
 
-type TabProps = {
-    icon: typeof FilePen;
-    name: string;
-    link: string;
-    onClick?: () => void;
-}
-
-const Tab = (props: TabProps) => {
-    return (
-        <a href={props.link} onClick={props.onClick}>
-            <div className="py-2.5 px-3 w-full rounded-lg flex items-center gap-x-4 text-white hover:text-[#BB162B] hover:bg-[#bb162b33]">
-                <props.icon className="size-5" />
-                <p className="text-sm font-semibold">{props.name}</p>
-            </div>
-        </a>
-    );
-}
-
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -58,21 +40,21 @@ const Sidebar = () => {
     // Closed sidebar
     if (!isOpen) {
         return (
-            <div className="absolute h-screen w-[var(--sidebar-width)] top-0 right-0 rounded-l-4xl bg-black cursor-pointer flex justify-center items-center"
+            <div className="sticky h-screen w-[var(--sidebar-collapsed-width)] -ml-[var(--sidebar-collapsed-width)] top-0 left-0 rounded-r-4xl bg-black cursor-pointer flex justify-center items-center"
                 onClick={() => setIsOpen(true)}
             >
-                <ChevronLeft className="size-8 text-white" />
+                <ChevronRight className="size-8 text-white" />
             </div>
         )
     }
 
     // Open sidebar
     return (
-        <div className="absolute h-screen w-[18rem] top-0 right-0 rounded-l-4xl bg-black pl-11 pr-5 py-6 flex">
-            <div className="absolute h-full w-[var(--sidebar-width)] top-0 left-0 cursor-pointer"
+        <div className="sticky z-50 h-screen w-[var(--sidebar-width)] -ml-[var(--sidebar-width)] top-0 left-0 rounded-r-4xl bg-black pr-10 pl-5 py-6 flex">
+            <div className="absolute h-full w-[var(--sidebar-collapsed-width)] top-0 right-0 cursor-pointer"
                 onClick={() => setIsOpen(false)}
             >
-                <ChevronRight className="size-8 text-white absolute top-1/2 left-1/2 -translate-1/2" />
+                <ChevronLeft className="size-8 text-white absolute top-1/2 left-1/2 -translate-1/2" />
             </div>
 
             <div className="flex-1 flex flex-col">
@@ -91,3 +73,21 @@ const Sidebar = () => {
 }
 
 export default Sidebar;
+
+type TabProps = {
+    icon: typeof FilePen;
+    name: string;
+    link: string;
+    onClick?: () => void;
+}
+
+const Tab = (props: TabProps) => {
+    return (
+        <a href={props.link} onClick={props.onClick}>
+            <div className="py-2.5 px-3 w-full rounded-lg flex items-center gap-x-4 text-white hover:text-[var(--kia-main-color)] hover:bg-[var(--kia-main-color-transparent)]">
+                <props.icon className="size-5" />
+                <p className="text-sm font-semibold">{props.name}</p>
+            </div>
+        </a>
+    );
+}

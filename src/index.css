@@ -8,7 +8,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --sidebar-width: 3rem;
+  @apply bg-stone-100;
+
+  --sidebar-width: 18rem;
+  --sidebar-collapsed-width: 3rem;
+
+  --kia-main-color: #BB162B;
+  --kia-main-color-transparent: #BB162B33
 }
 
 body {
@@ -25,5 +31,5 @@ button:focus {
 }
 
 .page-container {
-  @apply w-screen min-h-screen flex;
+  @apply w-[calc(100vw-var(--sidebar-collapsed-width))] min-h-screen flex flex-col;
 }
