@@ -1,11 +1,17 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { UserType, SigninDataType, LoginDataType } from '@schemas/auth';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+
+import ROUTES from "@constants/routes";
+import UnexpectedError from "@constants/unexpected-error";
+import { UserType, SigninDataType, SigninResponseType, LoginDataType, LoginResponseType } from "@schemas/auth";
+import { signinRequest, loginRequest, validateSessionRequest } from "@api/auth";
 
 interface AuthContextType {
     user: UserType | null;
     loading: boolean;
-    signin: (signinData: SigninDataType) => void;
-    login: (loginData: LoginDataType) => void;
+    signin: (signinData: SigninDataType) => Promise<SigninResponseType>;
+    login: (loginData: LoginDataType) => Promise<LoginResponseType>;
     logout: () => void;
 }
 
@@ -16,24 +22,53 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+    const navigate = useNavigate();
+    
     const [user, setUser] = useState<UserType | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        setUser(null);
-        setLoading(false);
+        async function validateUser() {
+            setLoading(true);
+
+            try {
+                const res = await validateSessionRequest();
+                setUser(res.data);
+            } catch {
+                navigate(ROUTES.LOGIN);
+            }
+    
+            setLoading(false);
+        }
+        validateUser();
     }, []);
 
-    const signin = (signinData: SigninDataType) => {
-        signinData
+    const signin = async (signinData: SigninDataType) => {
+        try {
+            const res = await signinRequest(signinData);
+            Cookies.set(import.meta.env.VITE_SESSION_COOKIE!, res.data.token);
+            setUser(res.data);
+
+            return res.data;
+        } catch (error: any) {
+            throw error.response?.data || UnexpectedError;
+        }
     };
 
-    const login = (loginData: LoginDataType) => {
-        loginData
+    const login = async (loginData: LoginDataType) => {
+        try {
+            const res = await loginRequest(loginData);
+            Cookies.set(import.meta.env.VITE_SESSION_COOKIE!, res.data.token);
+            setUser(res.data);
+
+            return res.data;
+        } catch (error: any) {
+            throw error.response?.data || UnexpectedError;
+        }
     };
 
     const logout = () => {
-
+        Cookies.remove(import.meta.env.VITE_SESSION_COOKIE!);
     };
 
     return (
@@ -53,7 +88,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
-        throw new Error('useAuth must be used within a AuthProvider');
+        throw new Error("useAuth must be used within a AuthProvider");
     }
     return context;
 };

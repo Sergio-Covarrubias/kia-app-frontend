@@ -19,6 +19,7 @@ export default defineConfig({
       '@layouts': path.resolve(__dirname, 'src/layouts'),
       '@components': path.resolve(__dirname, 'src/components'),
       '@api': path.resolve(__dirname, 'src/api'),
+      '@constants': path.resolve(__dirname, 'src/constants'),
     },
   },
 })
