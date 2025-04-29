@@ -21,7 +21,9 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route element={<SidebarLayout />}>
                 <Route path="/form" element={<Form />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route element={<DashboardProvider />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                </Route>
               </Route>
             </Route>
           </Routes>
