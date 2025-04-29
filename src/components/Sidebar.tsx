@@ -1,39 +1,36 @@
 import { useState } from "react";
 
+import { useAuth } from "@contexts/AuthContext";
+import ROUTES from "@constants/routes";
+
 import { ChevronLeft } from "lucide-react";
 import { ChevronRight } from "lucide-react";
+import { FilePen } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 import KiaLogo from "@assets/kia-logo-white.png";
 
-import { FilePen } from "lucide-react";
-import { LayoutDashboard } from "lucide-react";
-import { User } from "lucide-react";
-import { LogOut } from "lucide-react";
-
 const Sidebar = () => {
+    const { logout } = useAuth();
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const TABS: TabProps[] = [
         {
             icon: FilePen,
             name: "Formulario",
-            link: "/form",
+            link: ROUTES.FORM,
         },
         {
             icon: LayoutDashboard,
             name: "Dashboard",
-            link: "/dashboard",
-        },
-        {
-            icon: User,
-            name: "Perfil",
-            link: "/",
+            link: ROUTES.DASHBOARD,
         },
         {
             icon: LogOut,
             name: "Cerrar sesión",
-            link: "/",
-            onClick: () => { console.log("Hello"); },
+            link: ROUTES.LOGIN,
+            onClick: () => logout(),
         },
     ]
 
