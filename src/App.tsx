@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { AuthProvider } from '@contexts/AuthContext';
+import { DashboardProvider } from '@contexts/DashboardContext';
 
 import SidebarLayout from '@layouts/SidebarLayout';
 import Login from '@pages/Login';
@@ -17,7 +18,10 @@ function App() {
 
             <Route element={<SidebarLayout />}>
               <Route path='/form' element={<Form />} />
-              <Route path='/dashboard' element={<Dashboard />} />
+
+              <Route element={<DashboardProvider />}>
+                <Route path='/dashboard' element={<Dashboard />} />
+              </Route>
             </Route>
           </Routes>
         </AuthProvider>
