@@ -13,34 +13,31 @@ export default function Form() {
 
   return (
     <div className="form-container">
-      <h2 className="form-title">10.2 Formulario</h2>
 
-      {/* Botones del titulo para cambiar entre formulario y el dashboard */}
-      <div className="tab-buttons">
-        <button
-          onClick={() => setActiveTab("formulario")}
-          className={`tab-button ${activeTab === "formulario" ? "active-tab" : ""}`}
-        >
-          Formulario
-        </button>
-        <button
-          onClick={() => setActiveTab("dashboard")}
-          className={`tab-button ${activeTab === "dashboard" ? "active-tab" : ""}`}
-        >
-          Dashboard
-        </button>
-      </div>
+      {/* Título del formulario */}
+      <h1 className="text-3xl font-bold mb-6 text-center pt-10">Formulario</h1>
+
 
       {/* El formulario */}
       {activeTab === "formulario" && (
         <div className="form-section">
-          <h3 className="form-section-title">Formulario</h3>
           <form onSubmit={handleSubmit}>
             <div className="form-grid">
-              {Array.from({ length: 10 }).map((_, i) => (
+              {[
+                "Nombre de residuo",
+                "Tipo de contenedor",
+                "Área o proceso de generación",
+                "Fecha de ingreso",
+                "Fecha de salida",
+                "Estado de procesamiento - Art. 71 fracción I inciso (e)",
+                "Razón social 1",
+                "Número de autorización SCT",
+                "Razón social 2",
+                "Nombre de responsable"
+              ].map((label, i) => (
                 <div key={i} className="form-field">
                   <label htmlFor={`field${i + 1}`} className="form-label">
-                    Label
+                    {label}
                   </label>
                   <input id={`field${i + 1}`} className="form-input" />
                 </div>
@@ -52,13 +49,6 @@ export default function Form() {
               </button>
             </div>
           </form>
-        </div>
-      )}
-
-      {/* Cambiar al dashboard */}
-      {activeTab === "dashboard" && (
-        <div className="dashboard-placeholder">
-          <p className="dashboard-text">Contenido del dashboard</p>
         </div>
       )}
     </div>
