@@ -13,8 +13,8 @@
   --sidebar-width: 18rem;
   --sidebar-collapsed-width: 3rem;
 
-  --kia-main-color: #BB162B;
-  --kia-main-color-transparent: #BB162B33
+  --kia-main-color: #000000;
+  --kia-main-color-transparent: #00000033;
 }
 
 body {
@@ -30,6 +30,91 @@ button:focus {
   outline: none;
 }
 
+input[type="date"],
+input[type="month"],
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator {
+  opacity: 0%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
 .page-container {
   @apply w-[calc(100vw-var(--sidebar-collapsed-width))] min-h-screen flex flex-col;
+}
+
+/* --- FORMULARIO PERSONALIZADO --- */
+
+.form-container {
+  @apply w-full max-w-4xl mx-auto;
+}
+
+.form-title {
+  @apply text-2xl font-bold mb-4;
+}
+
+.tab-buttons {
+  @apply flex w-full mb-0;
+}
+
+.tab-button {
+  @apply flex-1 py-3 px-4 text-center bg-gray-600 text-gray-200;
+}
+
+.tab-button.active-tab {
+  @apply bg-gray-700 text-white;
+}
+
+.form-section {
+  @apply bg-gray-100 p-6 rounded-b-md;
+}
+
+.form-section-title {
+  @apply text-xl font-medium mb-6;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  column-gap: 1.5rem;
+}
+
+.form-field {
+  @apply mb-2;
+}
+
+.form-label {
+  @apply block text-sm mb-2;
+}
+
+.form-input {
+  @apply w-full p-2 border border-gray-300 rounded bg-white;
+}
+
+.submit-container {
+  @apply mt-8;
+}
+
+.submit-button {
+  @apply bg-gray-700 text-white px-4 py-2 rounded border-none cursor-pointer;
+}
+
+.dashboard-placeholder {
+  @apply bg-gray-100 p-6 rounded-b-md min-h-[400px] flex items-center justify-center;
+}
+
+.dashboard-text {
+  @apply text-gray-500;
 }
