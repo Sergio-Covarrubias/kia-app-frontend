@@ -57,7 +57,7 @@ const Sidebar = () => {
             <div className="flex-1 flex flex-col">
                 <img src={KiaLogo} alt="Kia Logo" />
                 <div className="mb-3 w-full h-px bg-white"></div>
-                <div className="flex flex-col gap-y-1">
+                <div className="flex flex-col">
                     {
                         TABS.map((tab, index) => (
                             <Tab key={index} {...tab} />
@@ -67,7 +67,7 @@ const Sidebar = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Sidebar;
 
@@ -76,15 +76,15 @@ type TabProps = {
     name: string;
     link: string;
     onClick?: () => void;
-}
+};
 
 const Tab = (props: TabProps) => {
     return (
         <a href={props.link} onClick={props.onClick}>
-            <div className="py-2.5 px-3 w-full rounded-lg flex items-center gap-x-4 text-white hover:text-[var(--kia-main-color)] hover:bg-[var(--kia-main-color-transparent)]">
+            <div className="py-3.5 px-3 w-full flex items-center gap-x-4 rounded-xs text-white hover:bg-gradient-to-l hover:from-[#ffffff76] hover:to-[#040404] transition duration-200 ease-in-out">
                 <props.icon className="size-5" />
                 <p className="text-sm font-semibold">{props.name}</p>
             </div>
         </a>
     );
-}
+};
