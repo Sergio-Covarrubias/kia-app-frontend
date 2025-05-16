@@ -1,8 +1,9 @@
-import { ErrorResponse } from "@schemas/errors";
+import { ErrorResponse } from "@schemas/base-errors";
 
-const UnexpectedError: ErrorResponse = {
-    type: "internal",
-    message: "Unexpected error",
+type UnexpectedError = { internal?: string; }
+const UnexpectedError: ErrorResponse<UnexpectedError> = {
+  type: "internal",
+  message: "Unexpected error",
 };
 
 export default UnexpectedError;

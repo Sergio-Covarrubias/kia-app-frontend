@@ -1,5 +1,5 @@
 import { ReactNode, useState, } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 import ROUTES from "@constants/routes";
 

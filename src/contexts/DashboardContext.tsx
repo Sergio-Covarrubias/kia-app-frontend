@@ -1,23 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { ErrorResponse } from "@schemas/errors";
-import { DashboardDataResponseType } from "@schemas/dashboard";
-import {
-  getDashboardDataRequest,
-  downloadBinnacleRequest,
-} from "@api/dashboard";
+import { ErrorResponse } from "@schemas/base-errors";
 import UnexpectedError from "@constants/unexpected-error";
 
+import { DashboardDataResponse, DashboardDataErrors, BinnacleErrors } from "@schemas/dashboard";
+import { getDashboardDataRequest, downloadBinnacleRequest, } from "@api/dashboard";
+
 type DashboardContextErrors = {
-  noDateSelectedDashboard?: boolean;
-  noDateSelectedBinnacle?: boolean;
-  emptyDashboard?: boolean;
-  emptyBinnacle?: boolean;
+  noDate?: boolean;
   startDate?: boolean;
-  endDate?: boolean;
-  internal?: boolean;
-};
+} & DashboardDataErrors & BinnacleErrors;
 export type TimeframeType = "day" | "month" | "year";
 
 interface DashboardContextType {
@@ -30,18 +23,16 @@ interface DashboardContextType {
   setStartDate: (startDate: string) => void;
 
   loadingValues: boolean;
-  values: DashboardDataResponseType | null;
+  values: DashboardDataResponse | null;
   refreshValues: () => Promise<void>;
 
   loadingBinnacle: boolean;
   downloadBinnacle: () => Promise<any>;
 }
 
-const DashboardContext = createContext<DashboardContextType | undefined>(
-  undefined
-);
+const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
-interface DashboardProviderProps {}
+interface DashboardProviderProps { }
 
 export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
   const [errors, setErrors] = useState<DashboardContextErrors>({});
@@ -51,7 +42,7 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
   const [startDate, setStartDate] = useState<string>("2024-01");
 
   const [loadingValues, setLoadingValues] = useState<boolean>(false);
-  const [values, setValues] = useState<DashboardDataResponseType | null>(null);
+  const [values, setValues] = useState<DashboardDataResponse | null>(null);
 
   const [loadingBinnacle, setLoadingBinnacle] = useState<boolean>(false);
 
@@ -69,24 +60,21 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
 
   const refreshValues = async () => {
     if (!startDate) {
-      setErrors({ noDateSelectedDashboard: true });
+      setErrors({ noDate: true });
       return;
     }
 
-    setLoadingValues(true);
     setErrors({});
+    setLoadingValues(true);
 
     try {
       const res = await getDashboardDataRequest({ timeframe, startDate });
       setValues(res.data);
     } catch (error: any) {
-      if (!error.response?.data) {
-        setLoadingValues(false);
-        throw UnexpectedError;
-      }
-
-      const errorData = error.response.data as ErrorResponse;
-      setErrors({ [errorData.type]: true });
+      console.error(error);
+      error = error.response?.data || UnexpectedError;
+      const errorData = error as ErrorResponse<DashboardDataErrors>;
+      setErrors({ [errorData.type]: DashboardDataErrors[errorData.type] });
     }
 
     setLoadingValues(false);
@@ -94,12 +82,12 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
 
   const downloadBinnacle = async () => {
     if (!startDate) {
-      setErrors({ noDateSelectedBinnacle: true });
+      setErrors({ noDate: true });
       return;
     }
 
-    setLoadingBinnacle(true);
     setErrors({});
+    setLoadingBinnacle(true);
 
     try {
       const res = await downloadBinnacleRequest({ timeframe, startDate });
@@ -114,16 +102,12 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (error: any) {
-      if (!error.response?.data) {
-        setLoadingBinnacle(false);
-        throw UnexpectedError;
-      }
+      error = error.response?.data || UnexpectedError;
 
       // Original request sends a blob, so in case of an error, we need to parse the blob into a JSON
-      const errorData = JSON.parse(
-        await error.response.data.text()
-      ) as ErrorResponse;
-      setErrors({ [errorData.type]: true });
+      const errorData = JSON.parse(await error.response.data.text()) as ErrorResponse<BinnacleErrors>;
+      console.log(errorData);
+      setErrors({ [errorData.type]: BinnacleErrors[errorData.type] });
     }
 
     setLoadingBinnacle(false);

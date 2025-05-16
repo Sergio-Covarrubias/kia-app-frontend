@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
+
+import ROUTES from "@constants/routes";
+import { ErrorResponse } from "@schemas/base-errors";
+import { LoginErrors } from "@schemas/auth";
 
 import { useAuth } from "@contexts/AuthContext";
-import { ErrorResponse } from "@schemas/errors";
-import ROUTES from "@constants/routes";
 
+import { TextFormField } from "@components/FormFields";
 import LoadingIcon from "@components/LoadingIcon";
 import whiteLogo from "@assets/kia-logo-white.png";
 import blacklogo from "@assets/kia-logo-black.png";
-
-type LoginErrors = {
-  missingCorporateId?: boolean;
-  missingPassword?: boolean;
-  corporateId?: boolean;
-  password?: boolean;
-};
 
 type LoginFields = {
   corporateId: string;
   password: string;
 };
+
+type FormErrors = LoginErrors;
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -33,14 +31,7 @@ const Login: React.FC = () => {
     }
   });
 
-  useEffect(() => {
-    setErrors({
-      missingCorporateId: formErrors.corporateId != undefined,
-      missingPassword: formErrors.password != undefined,
-    });
-  }, [formErrors.corporateId, formErrors.password]);
-
-  const [errors, setErrors] = useState<LoginErrors>({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -63,8 +54,8 @@ const Login: React.FC = () => {
       navigate(ROUTES.DASHBOARD);
       window.location.reload();
     } catch (error: any) {
-      const errorData = error as ErrorResponse;
-      setErrors({ [errorData.type]: true });
+      const errorData = error as ErrorResponse<LoginErrors>;
+      setErrors({ [errorData.type]: LoginErrors[errorData.type] });
     }
 
     setLoading(false);
@@ -91,47 +82,14 @@ const Login: React.FC = () => {
           <img src={blacklogo} alt="KIA Logo" className="block mx-auto mb-5 max-w-[120px]" />
 
           <form onSubmit={onSubmit} className="flex flex-col gap-y-5">
-            {/* Campo para el ID KIA */}
-            <div className="flex flex-col gap-y-1">
-              <label htmlFor="idKia" className="block text-lg font-bold mb-1">ID KIA</label>
-              <Controller
-                control={control}
-                name="corporateId"
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    type="text"
-                    className="w-full p-3 text-lg border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your KIA ID"
-                  />
-                )}
-              />
-              {errors.missingCorporateId && <span className="text-red-500 text-sm">Escriba su ID de empleado</span>}
-              {errors.corporateId && <span className="text-red-500 text-sm">El usuario no existe</span>}
-            </div>
+            <TextFormField<LoginFields> control={control} fieldName="corporateId" label="ID corporativa" required="Escriba su ID corportiva"
+              error={formErrors.corporateId?.message || errors.nonExisting}
+            />
 
-            {/* Campo para la contraseña */}
-            <div className="flex flex-col gap-y-1">
-              <label htmlFor="password" className="block text-lg font-bold mb-1">Password</label>
-              <Controller
-                control={control}
-                name="password"
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    type="password"
-                    className="w-full p-3 text-lg border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your password"
-                  />
-                )}
-              />
-              {errors.missingPassword && <span className="text-red-500 text-sm">Escriba su contraseña</span>}
-              {errors.password && <span className="text-red-500 text-sm">La contraseña es incorrecta</span>}
-            </div>
+            <TextFormField<LoginFields> control={control} fieldName="password" label="Contraseña" required="Escriba su contraseña"
+              error={formErrors.password?.message || errors.password}
+            />
 
-            {/* Botón para iniciar sesión */}
             <button
               type="submit"
               className="mt-1 px-2 py-3 flex gap-x-3 justify-center items-center font-bold bg-black rounded-md hover:bg-gray-800 transition-colors cursor-pointer"

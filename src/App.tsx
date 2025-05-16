@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import ROUTES from "@constants/routes";
 import { AuthProvider } from "@contexts/AuthContext";
-import { DashboardProvider } from '@contexts/DashboardContext';
+import { DashboardProvider } from "@contexts/DashboardContext";
 
 import ProtectedRoute from "@components/ProtectedRoute";
 import AdminRoute from "@components/AdminRoute";

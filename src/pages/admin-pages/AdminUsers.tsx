@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import classNames from "classnames";
 
 import ROUTES from "@constants/routes";
-import { ErrorResponse } from "@schemas/errors";
+import { ErrorResponse } from "@schemas/base-errors";
 import UnexpectedError from "@constants/unexpected-error";
 import { PostUserErrors, PutUserErrors, DeleteUserErrors } from "@schemas/users";
 
@@ -26,8 +26,8 @@ const AdminUsers = () => {
 
   const { control, handleSubmit, formState: { errors: formErrors } } = useForm<AdminUsersFields>({
     defaultValues: {
-      corporateId: '',
-      password: '',
+      corporateId: "",
+      password: "",
       isAdmin: false,
     },
   });
@@ -58,9 +58,18 @@ const AdminUsers = () => {
 
       navigate(ROUTES.ADMIN_DASHBOARD);
     } catch (error: any) {
-      error = error.response?.data || UnexpectedError
-      const errorData = error as ErrorResponse;
-      setErrors({ [errorData.type]: true });
+      error = error.response?.data || UnexpectedError;
+
+      if (action === "create") {
+        const errorData = error as ErrorResponse<PostUserErrors>;
+        setErrors({ [errorData.type]: PostUserErrors[errorData.type] });
+      } else if (action === "update") {
+        const errorData = error as ErrorResponse<PutUserErrors>;
+        setErrors({ [errorData.type]: PutUserErrors[errorData.type] });
+      } else {
+        const errorData = error as ErrorResponse<DeleteUserErrors>;
+        setErrors({ [errorData.type]: DeleteUserErrors[errorData.type] });
+      }
     }
 
     setLoading(false);

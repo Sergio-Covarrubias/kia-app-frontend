@@ -3,19 +3,20 @@ import { AxiosResponse } from "axios";
 
 import ROUTES from "@constants/routes";
 
-import { ErrorResponse } from "@schemas/errors";
+import { ErrorResponse } from "@schemas/base-errors";
 import UnexpectedError from "@constants/unexpected-error";
 
 import { X } from "lucide-react";
 
-type DeleteItemButtonProps = {
+type DeleteItemButtonProps<T> = {
   id: number;
   deleteFunction: (id: number) => Promise<AxiosResponse<void, any>>;
+  deleteErrors: T;
   setLoading: (loading: boolean) => void;
   setErrors: (errors: any) => void;
 };
 
-const DeleteItemButton = (props: DeleteItemButtonProps) => {
+const DeleteItemButton = <T,>(props: DeleteItemButtonProps<T>) => {
   const navigate = useNavigate();
   
   return (
@@ -27,9 +28,9 @@ const DeleteItemButton = (props: DeleteItemButtonProps) => {
           await props.deleteFunction(props.id);
           navigate(ROUTES.ADMIN_DASHBOARD);
         } catch (error: any) {
-          error = error.response?.data || UnexpectedError
-          const errorData = error as ErrorResponse;
-          props.setErrors({ [errorData.type]: true });
+          error = error.response?.data || UnexpectedError;
+          const errorData = error as ErrorResponse<T>;
+          props.setErrors({ [errorData.type]: props.deleteErrors[errorData.type] });
         }
 
         props.setLoading(false);

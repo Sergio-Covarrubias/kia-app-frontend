@@ -14,7 +14,7 @@ import AdminFormButtons from "@components/admin-dashboard/AdminFormButtons";
 import NameSelector from "@components/admin-dashboard/NameSelector";
 
 import UnexpectedError from "@constants/unexpected-error";
-import { ErrorResponse } from "@schemas/errors";
+import { ErrorResponse } from "@schemas/base-errors";
 
 type ResidueFields = {
   residue: {
@@ -57,6 +57,7 @@ const AdminResidues = () => {
 
   useEffect(() => {
     async function LoadValues() {
+      setErrors({});
       setLoading(true);
 
       try {
@@ -64,7 +65,7 @@ const AdminResidues = () => {
         setResidueData(res.data);
       } catch (error: any) {
         error = error.response?.data || UnexpectedError
-        const errorData = error as ErrorResponse;
+        const errorData = error as ErrorResponse<GetResiduesResponse>;
         setErrors({ [errorData.type]: GetResourceErrors[errorData.type as keyof GetResourceErrors] || "Error desconocido" });
       }
 
@@ -89,7 +90,7 @@ const AdminResidues = () => {
       data.residue.I ? "X" : "O",
       data.residue.B ? "X" : "O",
       data.residue.M ? "X" : "O",
-    ].join('');
+    ].join("");
 
     if (parsedMaterials === ("OOOOOOOOOO")) {
       setErrors({ emptyMaterials: "Selecciona al menos una etiqueta" });
@@ -98,7 +99,6 @@ const AdminResidues = () => {
 
     setUploading(true);
 
-    console.log(data);
     try {
       const residue = {
         name: data.residue.name,
@@ -116,10 +116,10 @@ const AdminResidues = () => {
       error = error.response?.data || UnexpectedError
       
       if (dataIndex === undefined) {
-        const errorData = error as ErrorResponse;
+        const errorData = error as ErrorResponse<PostResourceErrors>;
         setErrors({ [errorData.type]: PostResourceErrors[errorData.type as keyof PostResourceErrors] || "Error desconocido" });
       } else {
-        const errorData = error as ErrorResponse;
+        const errorData = error as ErrorResponse<PutResourceErrors>;
         setErrors({ [errorData.type]: PutResourceErrors[errorData.type as keyof PutResourceErrors] || "Error desconocido" });
       }
 
@@ -179,6 +179,7 @@ const AdminResidues = () => {
             <DeleteItemButton
               id={residueData[dataIndex].id}
               deleteFunction={deleteResidueRequest}
+              deleteErrors={DeleteResourceErrors}
               setLoading={setLoading}
               setErrors={setErrors}
             />

@@ -1,29 +1,39 @@
-export type DashboardEntryType = {
-    name: string;
-    value: number;
+export type DashboardEntry = {
+  name: string;
+  value: number;
 };
 
-export type DashboardDataBodyType = {
-    timeframe: string;
-    startDate: string;
+export type DashboardDataBody = {
+  timeframe: string;
+  startDate: string;
 };
 
-export type DashboardDataResponseType = {
-    totalTons: number;
-    residueCount: DashboardEntryType[];
-    containerCount: DashboardEntryType[];
-    areaCount: DashboardEntryType[];
-    processingStageCount: DashboardEntryType[];
-    provider1Count: DashboardEntryType[];
-    provider2Count: DashboardEntryType[];
-    residueTons: DashboardEntryType[];
-    containerTons: DashboardEntryType[];
-    areaTons: DashboardEntryType[];
-    processingStageTons: DashboardEntryType[];
-    provider1Tons: DashboardEntryType[];
+export type DashboardDataResponse = {
+  totalTons: number;
+  residueCount: DashboardEntry[];
+  containerCount: DashboardEntry[];
+  areaCount: DashboardEntry[];
+  processingStageCount: DashboardEntry[];
+  provider1Count: DashboardEntry[];
+  provider2Count: DashboardEntry[];
+  residueTons: DashboardEntry[];
+  containerTons: DashboardEntry[];
+  areaTons: DashboardEntry[];
+  processingStageTons: DashboardEntry[];
+  provider1Tons: DashboardEntry[];
 };
 
-export type BinnacleBodyType = {
-    timeframe: string;
-    startDate: string;
+export type DashboardDataErrors = { empty?: string; };
+export const DashboardDataErrors: DashboardDataErrors = {
+  empty: "No hay registros en el periodo seleccionado",
+};
+
+export type BinnacleBody = {
+  timeframe: string;
+  startDate: string;
+};
+
+export type BinnacleErrors = { empty?: string; };
+export const BinnacleErrors: BinnacleErrors = {
+  empty: "No hay registros en el periodo seleccionado"
 };

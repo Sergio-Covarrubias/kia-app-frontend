@@ -1,13 +1,16 @@
 import classNames from "classnames";
+
 import { useDashboard, TimeframeType } from "@contexts/DashboardContext";
 
 import PieChart from "@components/PieChart";
 import LoadingIcon from "@components/LoadingIcon";
 
-import { Download } from "lucide-react";
-import { Calendar } from "lucide-react";
-import { ChevronDown } from "lucide-react";
-import { RefreshCcw } from "lucide-react";
+import { 
+  Download,
+  Calendar,
+  ChevronDown,
+  RefreshCcw
+} from "lucide-react";
 
 const CONTAINER_CLASSNAME = " px-10 py-8 rounded-lg shadow-lg bg-white ";
 
@@ -43,8 +46,10 @@ const Dashboard = () => {
 
           <div className="flex gap-x-3 justify-center items-center">
             <DateSelector />
-            {/* <MoveHorizontal className="text-black size-6" />
-                        <DateSelector date={endDate} setDate={setEndDate} /> */}
+            {/* 
+            <MoveHorizontal className="text-black size-6" />
+            <DateSelector date={endDate} setDate={setEndDate} /> 
+            */}
           </div>
 
           <button
@@ -66,11 +71,11 @@ const Dashboard = () => {
               await downloadBinnacle();
             }}
           >
-            {loadingBinnacle ? (
+            {loadingBinnacle ?
               <LoadingIcon color="text-white" />
-            ) : (
+              :
               <Download className="size-5 text-white" />
-            )}
+            }
 
             <span className="text-sm text-white font-medium">
               Descargar Bitácora
@@ -114,11 +119,9 @@ const TimeframeButton = (props: TimeframeButtonProps) => {
 const DateSelector = () => {
   const { timeframe, startDate, setStartDate } = useDashboard();
 
-  const DATE_CLASSNAME =
-    " relative flex justify-center items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:outline-none ";
+  const DATE_CLASSNAME = " relative flex justify-center items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:outline-none ";
   const INPUT_CLASSNAME = " text-sm cursor-pointer py-3 pl-3 ";
-  const ICON_CLASSNAME =
-    " size-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ";
+  const ICON_CLASSNAME = " size-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ";
 
   switch (timeframe) {
     case "day":
@@ -166,7 +169,7 @@ const DateSelector = () => {
 const DashboardContent = () => {
   const { values, loadingValues: loading, errors } = useDashboard();
 
-  if (errors.internal || errors.endDate || errors.startDate) {
+  if (errors.startDate) {
     return (
       <div className={`${CONTAINER_CLASSNAME} flex justify-center`}>
         <span className="font-medium text-red-500">Error del servidor</span>
@@ -174,7 +177,7 @@ const DashboardContent = () => {
     );
   }
 
-  if (errors.noDateSelectedDashboard) {
+  if (errors.noDate) {
     return (
       <div className={`${CONTAINER_CLASSNAME} flex justify-center`}>
         <span className="font-medium text-red-500">
@@ -184,17 +187,7 @@ const DashboardContent = () => {
     );
   }
 
-  if (errors.noDateSelectedBinnacle) {
-    return (
-      <div className={`${CONTAINER_CLASSNAME} flex justify-center`}>
-        <span className="font-medium text-red-500">
-          Selecciona una fecha para la bitácora
-        </span>
-      </div>
-    );
-  }
-
-  if (errors.emptyDashboard || errors.emptyBinnacle) {
+  if (errors.empty) {
     return (
       <div className={`${CONTAINER_CLASSNAME} flex justify-center`}>
         <span className="font-medium text-red-500">

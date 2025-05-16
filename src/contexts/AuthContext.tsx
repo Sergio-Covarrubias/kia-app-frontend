@@ -4,91 +4,77 @@ import Cookies from "js-cookie";
 
 import ROUTES from "@constants/routes";
 import UnexpectedError from "@constants/unexpected-error";
-import { UserType, SigninDataType, SigninResponseType, LoginDataType, LoginResponseType } from "@schemas/auth";
-import { signinRequest, loginRequest, validateSessionRequest } from "@api/auth";
+import { User, LoginBody, LoginResponse } from "@schemas/auth";
+import { loginRequest, validateSessionRequest } from "@api/auth";
 
 interface AuthContextType {
-    user: UserType | null;
-    loading: boolean;
-    signin: (signinData: SigninDataType) => Promise<SigninResponseType>;
-    login: (loginData: LoginDataType) => Promise<LoginResponseType>;
-    logout: () => void;
+  user: User | null;
+  loading: boolean;
+  login: (loginData: LoginBody) => Promise<LoginResponse>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const navigate = useNavigate();
-    
-    const [user, setUser] = useState<UserType | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        async function validateUser() {
-            setLoading(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-            try {
-                const res = await validateSessionRequest();
-                setUser(res.data);
-            } catch {
-                navigate(ROUTES.LOGIN);
-            }
-    
-            setLoading(false);
-        }
-        validateUser();
-    }, []);
+  useEffect(() => {
+    async function validateUser() {
+      setLoading(true);
 
-    const signin = async (signinData: SigninDataType) => {
-        try {
-            const res = await signinRequest(signinData);
-            Cookies.set(import.meta.env.VITE_SESSION_COOKIE!, res.data.token);
-            setUser(res.data);
+      try {
+        const res = await validateSessionRequest();
+        setUser(res.data);
+      } catch {
+        navigate(ROUTES.LOGIN);
+      }
 
-            return res.data;
-        } catch (error: any) {
-            throw error.response?.data || UnexpectedError;
-        }
-    };
+      setLoading(false);
+    }
+    validateUser();
+  }, []);
 
-    const login = async (loginData: LoginDataType) => {
-        try {
-            const res = await loginRequest(loginData);
-            Cookies.set(import.meta.env.VITE_SESSION_COOKIE!, res.data.token);
-            setUser(res.data);
+  const login = async (loginData: LoginBody) => {
+    try {
+      const res = await loginRequest(loginData);
+      Cookies.set(import.meta.env.VITE_SESSION_COOKIE!, res.data.token);
+      setUser(res.data);
 
-            return res.data;
-        } catch (error: any) {
-            throw error.response?.data || UnexpectedError;
-        }
-    };
+      return res.data;
+    } catch (error: any) {
+      throw error.response?.data || UnexpectedError;
+    }
+  };
 
-    const logout = () => {
-        Cookies.remove(import.meta.env.VITE_SESSION_COOKIE!);
-    };
+  const logout = () => {
+    Cookies.remove(import.meta.env.VITE_SESSION_COOKIE!);
+  };
 
-    return (
-        <AuthContext.Provider value={{
-            user,
-            loading,
-            signin,
-            login,
-            logout,
+  return (
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      login,
+      logout,
 
-        }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth must be used within a AuthProvider");
-    }
-    return context;
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within a AuthProvider");
+  }
+  return context;
 };
