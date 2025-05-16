@@ -61,6 +61,7 @@ const Login: React.FC = () => {
 
       await login(loginData);
       navigate(ROUTES.DASHBOARD);
+      window.location.reload();
     } catch (error: any) {
       const errorData = error as ErrorResponse;
       setErrors({ [errorData.type]: true });

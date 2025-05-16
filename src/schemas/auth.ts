@@ -1,5 +1,6 @@
 export type UserType = {
     id: number;
+    isAdmin: boolean;
 };
 
 export type SigninDataType = {
@@ -9,10 +10,7 @@ export type SigninDataType = {
 
 export type SigninResponseType = {
     token: string;
-    id: number;
-    corportateId: string;
-    password: string;
-};
+} & UserType;
 
 export type LoginDataType = {
     corporateId: string;
@@ -21,11 +19,6 @@ export type LoginDataType = {
 
 export type LoginResponseType = {
     token: string;
-    id: number;
-    corportateId: string;
-    password: string;
-};
+} & UserType;
 
-export type ValidateResponseType = {
-    id: number;
-};
+export type ValidateResponseType = UserType;
