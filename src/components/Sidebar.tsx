@@ -8,6 +8,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   FilePen,
+  GraduationCap,
   ShieldUser,
   LogOut
 } from "lucide-react";
@@ -28,6 +29,12 @@ const Sidebar = () => {
       icon: FilePen,
       name: "Formulario",
       link: ROUTES.FORM,
+    },
+    {
+      icon: GraduationCap,
+      name: "Guía",
+      link: "https://682689c7b2a10837fe198ee1--extraordinary-basbousa-a608af.netlify.app/",
+      newTab: true,
     },
     {
       icon: ShieldUser,
@@ -85,13 +92,14 @@ type TabProps = {
   icon: typeof FilePen;
   name: string;
   link: string;
+  newTab?: boolean;
   onClick?: () => void;
   requiresAdmin?: boolean;
 };
 
 const Tab = (props: TabProps) => {
   return (
-    <a href={props.link} onClick={props.onClick}>
+    <a href={props.link} target={props.newTab ? "_blank" : "_self"} onClick={props.onClick}>
       <div className="py-3.5 px-3 w-full flex items-center gap-x-4 rounded-xs text-white hover:bg-gradient-to-l hover:from-[#ffffff76] hover:to-[#040404] transition duration-200 ease-in-out">
         <props.icon className="size-5" />
         <p className="text-sm font-semibold">{props.name}</p>

@@ -60,37 +60,37 @@ const AdminDashboard = () => {
     {
       Icon: Box,
       name: "Modificar contenerdores",
-      path: ROUTES.ADMIN_RESIDUES,
+      path: ROUTES.ADMIN_CONTAINERS,
     },
     {
       Icon: LandPlot,
       name: "Modificar areas",
-      path: ROUTES.ADMIN_RESIDUES,
+      path: ROUTES.ADMIN_AREAS,
     },
     {
       Icon: Replace,
       name: "Modificar etapas de procesamiento",
-      path: ROUTES.ADMIN_RESIDUES,
+      path: ROUTES.ADMIN_PROCESSING_STAGES,
     },
     {
       Icon: Heading1,
       name: "Modificar razones sociales 1",
-      path: ROUTES.ADMIN_RESIDUES,
+      path: ROUTES.ADMIN_PROVIDERS1,
     },
     {
       Icon: Barcode,
       name: "Modificar códigos SCT",
-      path: ROUTES.ADMIN_RESIDUES,
+      path: ROUTES.ADMIN_SCT_CODES,
     },
     {
       Icon: Heading2,
       name: "Modificar razones sociales 2",
-      path: ROUTES.ADMIN_RESIDUES,
+      path: ROUTES.ADMIN_PROVIDERS2,
     },
     {
       Icon: SquareUser,
       name: "Modificar nombres de responsables",
-      path: ROUTES.ADMIN_RESIDUES,
+      path: ROUTES.ADMIN_MANAGERS,
     },
     {
       Icon: CornerUpLeft,

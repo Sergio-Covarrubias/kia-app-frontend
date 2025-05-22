@@ -106,7 +106,6 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
 
       // Original request sends a blob, so in case of an error, we need to parse the blob into a JSON
       const errorData = JSON.parse(await error.response.data.text()) as ErrorResponse<BinnacleErrors>;
-      console.log(errorData);
       setErrors({ [errorData.type]: BinnacleErrors[errorData.type] });
     }
 

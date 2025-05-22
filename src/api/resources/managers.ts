@@ -2,6 +2,6 @@ import { GetManagersResponse, PostManagerBody, PutManagerBody } from "@schemas/r
 import axios from "../axios";
 
 export const getManagersRequest = () => axios.get<GetManagersResponse>("/managers");
-export const postManagersResidueRequest = (data: PostManagerBody) => axios.post<void>("/managers", data);
+export const postManagersRequest = (data: PostManagerBody) => axios.post<void>("/managers", data);
 export const putManagersRequest = (id: number, data: PutManagerBody) => axios.put<void>(`/managers/${id}`, data);
 export const deleteManagersRequest = (id: number) => axios.delete<void>(`/managers/${id}`);
