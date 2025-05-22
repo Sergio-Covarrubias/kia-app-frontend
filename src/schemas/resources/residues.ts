@@ -1,6 +1,7 @@
 export type GetResiduesResponse = {
   id: number;
   name: string;
+  translatedName: string;
   materials: string;
 }[]; 
 

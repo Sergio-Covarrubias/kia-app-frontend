@@ -88,14 +88,15 @@ const Login: React.FC = () => {
 
             <TextFormField<LoginFields> control={control} fieldName="password" label="Contraseña" required="Escriba su contraseña"
               error={formErrors.password?.message || errors.password}
+              type="password"
             />
 
             <button
               type="submit"
-              className="mt-1 px-2 py-3 flex gap-x-3 justify-center items-center font-bold bg-black rounded-md hover:bg-gray-800 transition-colors cursor-pointer"
+              className="mt-2 px-4 py-2.5 rounded-sm button-component"
             >
-              <span className="text-lg text-white">Iniciar sesión</span>
-              {loading && <LoadingIcon color="text-white" />}
+              <span className="text-lg">Iniciar sesión</span>
+              {loading && <LoadingIcon />}
             </button>
           </form>
         </div>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import ROUTES from "@constants/routes";
+import getRequestError from "@constants/get-error";
 import { GetResiduesResponse } from "@schemas/resources/residues";
 import { getResiduesRequest, postResidueRequest, putResidueRequest, deleteResidueRequest } from "@api/resources/residues";
 import { GetResourceErrors, PostResourceErrors, PutResourceErrors, DeleteResourceErrors } from "@schemas/resources/resources-errors";
@@ -10,15 +11,14 @@ import { GetResourceErrors, PostResourceErrors, PutResourceErrors, DeleteResourc
 import { TextFormField, BooleanFormField } from "@components/FormFields";
 import LoadingPage from "@components/LoadingPage";
 import DeleteItemButton from "@components/admin-dashboard/DeleteItemButton";
-import AdminFormButtons from "@components/admin-dashboard/AdminFormButtons";
+import GoBackButton from "@components/admin-dashboard/GoBackButton";
 import NameSelector from "@components/admin-dashboard/NameSelector";
-
-import UnexpectedError from "@constants/unexpected-error";
-import { ErrorResponse } from "@schemas/base-errors";
+import LoadingIcon from "@components/LoadingIcon";
 
 type ResidueFields = {
   residue: {
     name: string;
+    translatedName: string;
     C: boolean;
     R: boolean;
     E: boolean;
@@ -33,16 +33,23 @@ type ResidueFields = {
 };
 
 type ResidueErrors = {
+  name?: string;
+  translated_name?: string;
   emptyMaterials?: string;
 } & GetResourceErrors & PostResourceErrors & PutResourceErrors & DeleteResourceErrors;
 
-const AdminResidues = () => {
+const ResidueCreateErrors = {
+  name: "Un residuo ya tiene ese nombre",
+};
+
+const Residues = () => {
   const navigate = useNavigate();
 
   const { control, handleSubmit, formState: { errors: formErrors }, setValue, reset } = useForm<ResidueFields>({
     defaultValues: {
       residue: {
         name: "",
+        translatedName: "",
         C: false, R: false, E: false, T: false, Te: false, Th: false, Tt: false, I: false, B: false, M: false,
       },
     },
@@ -55,6 +62,8 @@ const AdminResidues = () => {
   const [residueData, setResidueData] = useState<GetResiduesResponse | null>(null);
   const [dataIndex, setDataIndex] = useState<number | undefined>();
 
+  const creatingNewResource = dataIndex === undefined;
+
   useEffect(() => {
     async function LoadValues() {
       setErrors({});
@@ -64,9 +73,7 @@ const AdminResidues = () => {
         const res = await getResiduesRequest();
         setResidueData(res.data);
       } catch (error: any) {
-        error = error.response?.data || UnexpectedError
-        const errorData = error as ErrorResponse<GetResiduesResponse>;
-        setErrors({ [errorData.type]: GetResourceErrors[errorData.type as keyof GetResourceErrors] || "Error desconocido" });
+        setErrors(getRequestError(error, GetResourceErrors));
       }
 
       setLoading(false);
@@ -102,10 +109,11 @@ const AdminResidues = () => {
     try {
       const residue = {
         name: data.residue.name,
+        translatedName: data.residue.translatedName,
         materials: parsedMaterials,
       };
 
-      if (dataIndex === undefined) {
+      if (creatingNewResource) {
         await postResidueRequest(residue);
       } else {
         await putResidueRequest(residueData[dataIndex].id, residue);
@@ -113,16 +121,10 @@ const AdminResidues = () => {
 
       navigate(ROUTES.ADMIN_DASHBOARD);
     } catch (error: any) {
-      error = error.response?.data || UnexpectedError
-      
-      if (dataIndex === undefined) {
-        const errorData = error as ErrorResponse<PostResourceErrors>;
-        setErrors({ [errorData.type]: PostResourceErrors[errorData.type as keyof PostResourceErrors] || "Error desconocido" });
-      } else {
-        const errorData = error as ErrorResponse<PutResourceErrors>;
-        setErrors({ [errorData.type]: PutResourceErrors[errorData.type as keyof PutResourceErrors] || "Error desconocido" });
-      }
-
+      setErrors(getRequestError(error, {
+        ...creatingNewResource ? PostResourceErrors : PutResourceErrors,
+        ...ResidueCreateErrors,
+      }));
     }
 
     setUploading(false);
@@ -133,22 +135,25 @@ const AdminResidues = () => {
   }
 
   return (
-    <div className="page-container p-10 gap-y-6 justify-center items-center bg-gray-100">
-      <h1 className="text-3xl font-bold text-center">Recursos</h1>
+    <div className="page-container form-container">
+      <GoBackButton />
 
-      <form onSubmit={onSubmit} className="w-full max-w-[48rem] flex flex-col gap-y-8 items-center">
-        {/* Select Residue Name */}
+      <h1 className="form-title">Residuos</h1>
+
+      <form onSubmit={onSubmit} className="form">
         <NameSelector
           dataIndex={dataIndex}
+          data={residueData.map(residue => residue.name)}
           onChage={(e) => {
-            const index = isNaN(parseInt(e.target.value)) ? undefined : parseInt(e.target.value);
+            const index = !isNaN(parseInt(e.target.value)) ? parseInt(e.target.value) : undefined;
             setDataIndex(index);
 
             if (index !== undefined) {
               const residue = residueData[index];
-              console
+              console.log(residue);
               setValue("residue", {
                 name: residue.name,
+                translatedName: residue.translatedName,
                 C: residue.materials[0] === "X",
                 R: residue.materials[1] === "X",
                 E: residue.materials[2] === "X",
@@ -164,17 +169,14 @@ const AdminResidues = () => {
               reset();
             }
           }}
-          data={residueData.map(residue => residue.name)}
         />
 
         <div className="w-full flex gap-x-5 items-end">
-          {/* Residue Name */}
           <TextFormField<ResidueFields> control={control} fieldName="residue.name" label="Nombre del residuo"
             required="Escriba el nombre del residuo"
-            error={formErrors.residue?.name?.message || errors.existing || errors.nonExisting || errors.emptyMaterials}
+            error={formErrors.residue?.name?.message || errors.name || errors.nonExisting || errors.emptyMaterials}
           />
 
-          {/* Delete Residue */}
           {dataIndex !== undefined &&
             <DeleteItemButton
               id={residueData[dataIndex].id}
@@ -185,6 +187,11 @@ const AdminResidues = () => {
             />
           }
         </div>
+
+        <TextFormField<ResidueFields> control={control} fieldName="residue.translatedName" label="Nombre del residuo en inglés"
+          required="Escriba el nombre del residuo en inglés"
+          error={formErrors.residue?.translatedName?.message || errors.translated_name}
+        />
 
         <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-8 place-items-center">
           <BooleanFormField<ResidueFields> control={control} fieldName={`residue.C`} label="C" />
@@ -199,10 +206,13 @@ const AdminResidues = () => {
           <BooleanFormField<ResidueFields> control={control} fieldName={`residue.M`} label="M" />
         </div>
 
-        <AdminFormButtons loading={uploading} text="Enviar" />
+        <button type="submit" className="px-4 py-2 rounded-md button-component">
+          {creatingNewResource ? "Crear" : "Actualizar"}
+          {uploading && <LoadingIcon color="text-white" />}
+        </button>
       </form>
     </div>
   );
 };
 
-export default AdminResidues;
+export default Residues;

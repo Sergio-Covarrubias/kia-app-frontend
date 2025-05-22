@@ -1,5 +1,5 @@
 type LoadingIconProps = {
-  color: string;
+  color?: string;
 };
 
 const LoadingIcon = (props: LoadingIconProps) => {

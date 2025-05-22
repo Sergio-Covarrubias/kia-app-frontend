@@ -1,10 +1,8 @@
 export type GetResourceErrors = {};
 export const GetResourceErrors: GetResourceErrors = {};
 
-export type PostResourceErrors = { existing?: string; };
-export const PostResourceErrors: PostResourceErrors = {
-  existing: "El valor no se puede repetir",
-};
+export type PostResourceErrors = {};
+export const PostResourceErrors: PostResourceErrors = {};
 
 export type PutResourceErrors = { nonExisting?: string; };
 export const PutResourceErrors: PutResourceErrors = {

@@ -99,9 +99,9 @@ export default function Form() {
           <SelectFormField<UploadFormBody> control={control} fieldName="manager" label="Responsable" required="Seleccione a un responsable" error={formErrors.manager?.message || errors.manager} values={values.managers} />
         </div>
 
-        <button type="submit" className="w-fit mt-2 bg-black text-white px-4 py-2 rounded border-none cursor-pointer flex gap-x-3 items-center">
+        <button type="submit" className="mt-2 w-fit px-4 py-2.5 rounded-md button-component">
           Crear Registro
-          {uploading && <LoadingIcon color="text-white" />}
+          {uploading && <LoadingIcon />}
         </button>
       </form>
     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
 import ROUTES from "@constants/routes";
@@ -10,8 +10,9 @@ import { PostUserErrors, PutUserErrors, DeleteUserErrors } from "@schemas/users"
 
 import { createUserRequest, putUserRequest, deleteUserRequest } from "@api/users";
 
-import { TextFormField } from "@components/FormFields";
-import AdminFormButtons from "@components/admin-dashboard/AdminFormButtons";
+import { TextFormField, BooleanFormField } from "@components/FormFields";
+import LoadingIcon from "@components/LoadingIcon";
+import GoBackButton from "@components/admin-dashboard/GoBackButton";
 
 type AdminUsersFields = {
   corporateId: string;
@@ -58,6 +59,8 @@ const AdminUsers = () => {
 
       navigate(ROUTES.ADMIN_DASHBOARD);
     } catch (error: any) {
+      console.log(error);
+      
       error = error.response?.data || UnexpectedError;
 
       if (action === "create") {
@@ -76,10 +79,12 @@ const AdminUsers = () => {
   });
 
   return (
-    <div className="page-container p-10 gap-y-6 justify-center items-center bg-gray-100">
-      <h1 className="text-3xl font-bold text-center">{action === "create" ? "Crear" : (action === "update" ? "Modificar" : "Eliminar")} Usuario</h1>
+    <div className="page-container form-container">
+      <GoBackButton />
 
-      <form onSubmit={onSubmit} className="w-full max-w-[48rem] flex flex-col gap-y-8 items-center">
+      <h1 className="form-title">{action === "create" ? "Crear" : (action === "update" ? "Modificar" : "Eliminar")} Usuario</h1>
+
+      <form onSubmit={onSubmit} className="form">
         <div className={classNames("w-full grid grid-cols-1 gap-y-8 gap-x-8", { "md:grid-cols-2": action !== "delete" })}>
           <TextFormField<AdminUsersFields> control={control} fieldName="corporateId" label="ID corporativo" required="Ingresa el nombre del usuario"
             error={formErrors.corporateId?.message || errors.corporateId || errors.nonExistingId}
@@ -89,30 +94,20 @@ const AdminUsers = () => {
             action !== "delete" &&
             <TextFormField<AdminUsersFields> control={control} fieldName="password" label="Contraseña" required="Ingresa la contraseña"
               error={formErrors.password?.message}
+              type="password"
             />
           }
         </div>
 
         {
           action !== "delete" &&
-          <Controller
-            control={control}
-            name="isAdmin"
-            render={({ field }) => (
-              <div className="flex gap-x-3 items-center">
-                <label htmlFor="isAdmin" className="text-sm">¿Hacer al usuario admin?</label>
-                <input
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                  type="checkbox"
-                  className="accent-black size-3"
-                />
-              </div>
-            )}
-          />
+          <BooleanFormField<AdminUsersFields> control={control} fieldName="isAdmin" label="¿Hacer al usuario admin?" />
         }
 
-        <AdminFormButtons loading={loading} text="Enviar" />
+        <button type="submit" className="px-4 py-2 rounded-md button-component">
+          {action === "create" ? "Crear" : (action === "update" ? "Actualizar" : "Eliminar")} 
+          {loading && <LoadingIcon color="text-white" />}
+        </button>
       </form>
     </div>
   );
