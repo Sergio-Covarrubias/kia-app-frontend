@@ -2,8 +2,8 @@ import { ChevronDown } from "lucide-react";
 
 type NameSelectorProps = {
   dataIndex: number | undefined;
-  onChage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   data: string[];
+  onChage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
 const NameSelector = (props: NameSelectorProps) => {

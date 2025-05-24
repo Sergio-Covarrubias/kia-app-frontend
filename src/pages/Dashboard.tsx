@@ -5,7 +5,7 @@ import { useDashboard, TimeframeType } from "@contexts/DashboardContext";
 import PieChart from "@components/PieChart";
 import LoadingIcon from "@components/LoadingIcon";
 
-import { 
+import {
   Download,
   Calendar,
   ChevronDown,
@@ -19,24 +19,14 @@ const Dashboard = () => {
 
   return (
     <div className="page-container p-10 gap-y-6">
-      <div
-        className={`${CONTAINER_CLASSNAME} grid grid-cols-3 justify-between items-center`}
-      >
+      <div className={`${CONTAINER_CLASSNAME} grid grid-cols-1 md:grid-cols-3 gap-y-8 justify-between items-center`}>
         {/* Timeframe selector */}
-        <div className="gap-x-4 flex justify-start items-center">
+        <div className="gap-x-4 flex flex-col md:flex-row gap-y-3 justify-start items-center">
           <span className="text-sm font-medium">Periodo:</span>
           <div className="flex">
-            <TimeframeButton
-              timeframe="day"
-              text="Día"
-              className="rounded-l-lg"
-            />
+            <TimeframeButton timeframe="day" text="Día" className="rounded-l-lg" />
             <TimeframeButton timeframe="month" text="Mes" className="" />
-            <TimeframeButton
-              timeframe="year"
-              text="Año"
-              className="rounded-r-lg"
-            />
+            <TimeframeButton timeframe="year" text="Año" className="rounded-r-lg" />
           </div>
         </div>
 
@@ -53,12 +43,10 @@ const Dashboard = () => {
           </div>
 
           <button
-            className="w-fit h-fit px-5 py-3 gap-x-2.5 flex items-center bg-[var(--kia-main-color)] shadow-[0_4px_12px_0_var(--kia-main-color-transparent)] rounded-lg cursor-pointer"
-            onClick={async () => {
-              await refreshValues();
-            }}
+            className="w-fit h-fit px-5 py-3 rounded-lg text-sm button-component"
+            onClick={async () => { await refreshValues(); }}
           >
-            <span className="text-sm text-white font-medium">Actualizar</span>
+            Actualizar
             <RefreshCcw className="size-5 text-white" />
           </button>
         </div>
@@ -66,20 +54,11 @@ const Dashboard = () => {
         {/* Download binnacle */}
         <div className="flex justify-end">
           <button
-            className="w-fit h-fit px-5 py-3 gap-x-2.5 flex items-center bg-[var(--kia-main-color)] shadow-[0_4px_12px_0_var(--kia-main-color-transparent)] rounded-lg cursor-pointer"
-            onClick={async () => {
-              await downloadBinnacle();
-            }}
+            className="w-fit h-fit px-5 py-3 rounded-lg text-sm button-component"
+            onClick={async () => { await downloadBinnacle(); }}
           >
-            {loadingBinnacle ?
-              <LoadingIcon color="text-white" />
-              :
-              <Download className="size-5 text-white" />
-            }
-
-            <span className="text-sm text-white font-medium">
-              Descargar Bitácora
-            </span>
+            {loadingBinnacle ? <LoadingIcon /> : <Download className="size-8 md:size-5 text-white" />}
+            Descargar Bitácora
           </button>
         </div>
       </div>
@@ -102,10 +81,10 @@ const TimeframeButton = (props: TimeframeButtonProps) => {
   return (
     <button
       className={classNames(
-        "px-4 py-1.5 text-sm font-medium cursor-pointer",
+        "px-4 py-1.5 text-sm font-medium cursor-pointer transition duration-150 ease-in-out",
         props.className,
         {
-          "bg-gray-200 text-black": props.timeframe != timeframe,
+          "bg-gray-200 text-black hover:bg-gray-300": props.timeframe != timeframe,
           "bg-[var(--kia-main-color)] text-white": props.timeframe == timeframe,
         }
       )}
@@ -169,40 +148,19 @@ const DateSelector = () => {
 const DashboardContent = () => {
   const { values, loadingValues: loading, errors } = useDashboard();
 
-  if (errors.startDate) {
+  const error = errors.empty || errors.noDate || errors.startDate || errors.endDate || errors.timeFrame;
+  if (error) {
     return (
-      <div className={`${CONTAINER_CLASSNAME} flex justify-center`}>
-        <span className="font-medium text-red-500">Error del servidor</span>
-      </div>
-    );
-  }
-
-  if (errors.noDate) {
-    return (
-      <div className={`${CONTAINER_CLASSNAME} flex justify-center`}>
-        <span className="font-medium text-red-500">
-          Selecciona una fecha para la búsqueda
-        </span>
-      </div>
-    );
-  }
-
-  if (errors.empty) {
-    return (
-      <div className={`${CONTAINER_CLASSNAME} flex justify-center`}>
-        <span className="font-medium text-red-500">
-          La fecha seleccionada no contiene ningún registro
-        </span>
+      <div className={`${CONTAINER_CLASSNAME} flex justify-center text-center text-red-500 font-medium`}>
+        {error}
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div
-        className={`${CONTAINER_CLASSNAME} flex gap-x-3.5 justify-center items-center`}
-      >
-        <span className="font-medium">Cargando</span>
+      <div className={`${CONTAINER_CLASSNAME} flex gap-x-3.5 justify-center items-center font-medium`}>
+        Cargando
         <LoadingIcon color="text-black" />
       </div>
     );
@@ -210,14 +168,14 @@ const DashboardContent = () => {
 
   if (!values) {
     return (
-      <div className={`${CONTAINER_CLASSNAME} flex justify-center`}>
-        <span className="font-medium">Actualice su búsqueda</span>
+      <div className={`${CONTAINER_CLASSNAME} flex justify-center text-center font-medium`}>
+        Actualice su búsqueda
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div className={CONTAINER_CLASSNAME}>
         <PieChart
           title="Distribución por Contenedor"

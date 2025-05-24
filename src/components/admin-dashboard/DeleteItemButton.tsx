@@ -20,7 +20,7 @@ const DeleteItemButton = <T,>(props: DeleteItemButtonProps<T>) => {
   const navigate = useNavigate();
   
   return (
-    <button type="button" className="mb-0.5 p-2 rounded-lg cursor-pointer border-2 border-black bg-black text-white hover:bg-white hover:text-black transition duration-200 ease-in-out"
+    <button type="button" className="mb-2.5 p-2 rounded-lg cursor-pointer border-2 border-black bg-black text-white hover:bg-white hover:text-black transition duration-200 ease-in-out"
       onClick={async () => {
         props.setLoading(true);
 

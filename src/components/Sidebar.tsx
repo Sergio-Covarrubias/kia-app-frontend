@@ -8,6 +8,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   FilePen,
+  GraduationCap,
   ShieldUser,
   LogOut
 } from "lucide-react";
@@ -30,6 +31,12 @@ const Sidebar = () => {
       link: ROUTES.FORM,
     },
     {
+      icon: GraduationCap,
+      name: "Guía",
+      link: "https://682689c7b2a10837fe198ee1--extraordinary-basbousa-a608af.netlify.app/",
+      newTab: true,
+    },
+    {
       icon: ShieldUser,
       name: "Admin Dashboard",
       link: ROUTES.ADMIN_DASHBOARD,
@@ -46,7 +53,7 @@ const Sidebar = () => {
   // Closed sidebar
   if (!isOpen) {
     return (
-      <div className="sticky h-screen w-[var(--sidebar-collapsed-width)] -ml-[var(--sidebar-collapsed-width)] top-0 left-0 rounded-r-4xl bg-black cursor-pointer flex justify-center items-center"
+      <div className="sticky h-screen w-[var(--sidebar-collapsed-width)] -ml-[var(--sidebar-collapsed-width)] top-0 left-0 rounded-r-4xl bg-black cursor-pointer flex justify-center items-center border-r-2 border-white"
         onClick={() => setIsOpen(true)}
       >
         <ChevronRight className="size-8 text-white" />
@@ -56,7 +63,7 @@ const Sidebar = () => {
 
   // Open sidebar
   return (
-    <div className="sticky z-50 h-screen w-[var(--sidebar-width)] -ml-[var(--sidebar-width)] top-0 left-0 rounded-r-4xl bg-black pr-10 pl-5 py-6 flex">
+    <div className="sticky z-50 h-screen w-[var(--sidebar-width)] -ml-[var(--sidebar-width)] top-0 left-0 rounded-r-4xl bg-black pr-10 pl-5 py-6 flex border-r-2 border-white">
       <div className="absolute h-full w-[var(--sidebar-collapsed-width)] top-0 right-0 cursor-pointer"
         onClick={() => setIsOpen(false)}
       >
@@ -85,13 +92,14 @@ type TabProps = {
   icon: typeof FilePen;
   name: string;
   link: string;
+  newTab?: boolean;
   onClick?: () => void;
   requiresAdmin?: boolean;
 };
 
 const Tab = (props: TabProps) => {
   return (
-    <a href={props.link} onClick={props.onClick}>
+    <a href={props.link} target={props.newTab ? "_blank" : "_self"} onClick={props.onClick}>
       <div className="py-3.5 px-3 w-full flex items-center gap-x-4 rounded-xs text-white hover:bg-gradient-to-l hover:from-[#ffffff76] hover:to-[#040404] transition duration-200 ease-in-out">
         <props.icon className="size-5" />
         <p className="text-sm font-semibold">{props.name}</p>

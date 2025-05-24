@@ -14,8 +14,7 @@
   --sidebar-collapsed-width: 3rem;
 
   --kia-main-color: #000000;
-  --kia-main-color-transparent: #00000033;
-  --kia-secondary-color: #fffffff2;
+  --kia-main-color-transparent: #00000050;
 }
 
 body {
@@ -64,4 +63,23 @@ input[type="month"]::-webkit-calendar-picker-indicator {
 
 .page-container {
   @apply w-[calc(100vw-var(--sidebar-collapsed-width))] min-h-screen flex flex-col;
+}
+
+.button-component {
+  @apply flex gap-x-3 justify-center items-center cursor-pointer
+  bg-[var(--kia-main-color)] text-white font-medium
+  hover:shadow-[0_4px_14px_0_var(--kia-main-color-transparent)]
+  transition duration-150 ease-in-out
+}
+
+.form-container {
+  @apply p-10 gap-y-6 justify-center items-center 
+}
+
+.form {
+  @apply w-full max-w-[48rem] flex flex-col gap-y-8 items-center
+}
+
+.form-title {
+  @apply text-3xl font-bold text-center
 }
