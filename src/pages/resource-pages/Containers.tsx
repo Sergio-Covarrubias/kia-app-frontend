@@ -101,7 +101,7 @@ const Containers = () => {
 
   return (
     <div className="page-container form-container">
-      <GoBackButton />
+      <GoBackButton path={ROUTES.ADMIN_DASHBOARD} />
 
       <h1 className="form-title">Contenedores</h1>
 

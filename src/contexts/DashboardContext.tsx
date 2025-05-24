@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
+import getRequestError from "@constants/get-error";
 import { ErrorResponse } from "@schemas/base-errors";
 import UnexpectedError from "@constants/unexpected-error";
 
@@ -8,9 +9,9 @@ import { DashboardDataResponse, DashboardDataErrors, BinnacleErrors } from "@sch
 import { getDashboardDataRequest, downloadBinnacleRequest, } from "@api/dashboard";
 
 type DashboardContextErrors = {
-  noDate?: boolean;
-  startDate?: boolean;
+  noDate?: string;
 } & DashboardDataErrors & BinnacleErrors;
+
 export type TimeframeType = "day" | "month" | "year";
 
 interface DashboardContextType {
@@ -60,7 +61,7 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
 
   const refreshValues = async () => {
     if (!startDate) {
-      setErrors({ noDate: true });
+      setErrors({ noDate: "Selecciona una fecha" });
       return;
     }
 
@@ -71,10 +72,7 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
       const res = await getDashboardDataRequest({ timeframe, startDate });
       setValues(res.data);
     } catch (error: any) {
-      console.error(error);
-      error = error.response?.data || UnexpectedError;
-      const errorData = error as ErrorResponse<DashboardDataErrors>;
-      setErrors({ [errorData.type]: DashboardDataErrors[errorData.type] });
+      getRequestError(error, DashboardDataErrors);
     }
 
     setLoadingValues(false);
@@ -82,7 +80,7 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
 
   const downloadBinnacle = async () => {
     if (!startDate) {
-      setErrors({ noDate: true });
+      setErrors({ noDate: "Selecciona una fecha" });
       return;
     }
 

@@ -136,7 +136,7 @@ const Residues = () => {
 
   return (
     <div className="page-container form-container">
-      <GoBackButton />
+      <GoBackButton path={ROUTES.ADMIN_DASHBOARD} />
 
       <h1 className="form-title">Residuos</h1>
 

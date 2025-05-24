@@ -106,7 +106,7 @@ const Providers1 = () => {
 
   return (
     <div className="page-container form-container">
-      <GoBackButton />
+      <GoBackButton path={ROUTES.ADMIN_DASHBOARD} />
 
       <h1 className="form-title">Razones sociales 1</h1>
 

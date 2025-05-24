@@ -53,7 +53,7 @@ const Sidebar = () => {
   // Closed sidebar
   if (!isOpen) {
     return (
-      <div className="sticky h-screen w-[var(--sidebar-collapsed-width)] -ml-[var(--sidebar-collapsed-width)] top-0 left-0 rounded-r-4xl bg-black cursor-pointer flex justify-center items-center"
+      <div className="sticky h-screen w-[var(--sidebar-collapsed-width)] -ml-[var(--sidebar-collapsed-width)] top-0 left-0 rounded-r-4xl bg-black cursor-pointer flex justify-center items-center border-r-2 border-white"
         onClick={() => setIsOpen(true)}
       >
         <ChevronRight className="size-8 text-white" />
@@ -63,7 +63,7 @@ const Sidebar = () => {
 
   // Open sidebar
   return (
-    <div className="sticky z-50 h-screen w-[var(--sidebar-width)] -ml-[var(--sidebar-width)] top-0 left-0 rounded-r-4xl bg-black pr-10 pl-5 py-6 flex">
+    <div className="sticky z-50 h-screen w-[var(--sidebar-width)] -ml-[var(--sidebar-width)] top-0 left-0 rounded-r-4xl bg-black pr-10 pl-5 py-6 flex border-r-2 border-white">
       <div className="absolute h-full w-[var(--sidebar-collapsed-width)] top-0 right-0 cursor-pointer"
         onClick={() => setIsOpen(false)}
       >

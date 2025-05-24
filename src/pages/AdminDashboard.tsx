@@ -5,7 +5,7 @@ import ROUTES from "@constants/routes";
 
 import {
   CornerUpLeft,
-  UserCog, FileCog,
+  UserCog, FilePen, FileCog,
   UserPlus, UserMinus, UserPen,
   Radiation, Box, LandPlot, Replace, Heading1, Barcode, Heading2, SquareUser
 } from "lucide-react"
@@ -18,12 +18,17 @@ const AdminDashboard = () => {
   const MAIN_SECTIONS: SectionContainerProps[] = [
     {
       Icon: UserCog,
-      name: "Modificar usuarios",
+      name: "Editar usuarios",
       action: () => setTab("users"),
     },
     {
+      Icon: FilePen,
+      name: "Editar registros de formularios",
+      path: ROUTES.ADMIN_FORMS,
+    },
+    {
       Icon: FileCog,
-      name: "Modificar formulario",
+      name: "Editar opciones de formulario",
       action: () => setTab("form"),
     },
   ];
@@ -113,7 +118,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="page-container p-10 justify-center items-center bbg-yellow-200">
+    <div className="page-container p-10 justify-center items-center">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 bbg-red-200">
         {
           tabs.map((tabProps: SectionContainerProps, index: number) => (
