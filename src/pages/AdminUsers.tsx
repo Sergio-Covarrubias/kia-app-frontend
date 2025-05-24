@@ -80,7 +80,7 @@ const AdminUsers = () => {
 
   return (
     <div className="page-container form-container">
-      <GoBackButton />
+      <GoBackButton path={ROUTES.ADMIN_DASHBOARD} />
 
       <h1 className="form-title">{action === "create" ? "Crear" : (action === "update" ? "Modificar" : "Eliminar")} Usuario</h1>
 

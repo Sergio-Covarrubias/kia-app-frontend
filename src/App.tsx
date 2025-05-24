@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ROUTES from "@constants/routes";
 import { AuthProvider } from "@contexts/AuthContext";
 import { DashboardProvider } from "@contexts/DashboardContext";
+import { AdminFormsProvider } from "@contexts/AdminFormsContext";
 
 import ProtectedRoute from "@components/ProtectedRoute";
 import AdminRoute from "@components/AdminRoute";
@@ -14,6 +15,7 @@ import Dashboard from "@pages/Dashboard";
 
 import AdminDashboard from "@pages/AdminDashboard";
 import AdminUsers from "@pages/AdminUsers";
+import AdminForms from "@pages/AdminForms";
 import Residues from "@pages/resource-pages/Residues";
 import Containers from "@pages/resource-pages/Containers";
 import Areas from "@pages/resource-pages/Areas";
@@ -45,6 +47,10 @@ function App() {
                 <Route path={ROUTES.ADMIN_DASHBOARD} element={<AdminDashboard />} />
 
                 <Route path={ROUTES.ADMIN_USERS_BASE} element={<AdminUsers />} />
+
+                <Route element={<AdminFormsProvider />}>
+                  <Route path={ROUTES.ADMIN_FORMS} element={<AdminForms />} />
+                </Route>                
 
                 <Route path={ROUTES.ADMIN_RESIDUES} element={<Residues />} />
                 <Route path={ROUTES.ADMIN_CONTAINERS} element={<Containers />} />

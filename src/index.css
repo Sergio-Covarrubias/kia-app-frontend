@@ -73,7 +73,7 @@ input[type="month"]::-webkit-calendar-picker-indicator {
 }
 
 .form-container {
-  @apply p-10 gap-y-6 justify-center items-center bg-gray-100
+  @apply p-10 gap-y-6 justify-center items-center 
 }
 
 .form {

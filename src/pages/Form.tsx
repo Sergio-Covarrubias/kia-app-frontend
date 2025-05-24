@@ -3,24 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import ROUTES from "@constants/routes";
-import { LoadFormValuesResponse, LoadFormValuesErrors, UploadFormBody, UploadFormErrors } from "@schemas/forms";
-import { loadFormValuesRequest, uploadFormRequest } from "@api/forms";
-
-import { ErrorResponse } from "@schemas/base-errors";
-import UnexpectedError from "@constants/unexpected-error";
+import getRequestError from "@constants/get-error";
+import { GetFormOptionsResponse, GetFormOptionsErrors, PostFormBody, PostFormErrors, GetFormErrors, PutFormErrors, DeleteFormErrors } from "@schemas/forms";
+import { getFormOptionsRequest, postFormRequest, getFormRequest, putFormRequest, deleteFormRequest } from "@api/forms";
 
 import { SelectFormField, TextFormField, DateFormField } from "@components/FormFields";
 import LoadingPage from "@components/LoadingPage";
 import LoadingIcon from "@components/LoadingIcon";
+import GoBackButton from "@components/admin-dashboard/GoBackButton";
 
-type FormErrors = LoadFormValuesErrors & UploadFormErrors;
+type FormErrors = GetFormOptionsErrors & PostFormErrors & PutFormErrors & DeleteFormErrors;
 
 export default function Form() {
   const navigate = useNavigate();
 
-  const { control, handleSubmit, formState: { errors: formErrors } } = useForm<UploadFormBody>({
+  const { control, handleSubmit, formState: { errors: formErrors }, reset } = useForm<PostFormBody>({
     defaultValues: {
-      name: "",
+      residue: "",
       tons: "",
       container: "",
       area: "",
@@ -35,42 +34,67 @@ export default function Form() {
   });
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [uploading, setUploading] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [values, setValues] = useState<LoadFormValuesResponse | null>(null);
+
+  const [values, setValues] = useState<GetFormOptionsResponse | null>(null);
+  const [creating, setCreating] = useState<boolean>(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
+
+  const [formId, setFormId] = useState<number | null>(null);
 
   useEffect(() => {
-    async function loadFormData() {
+    async function loadFormOptions() {
       setErrors({});
       setLoading(true);
 
       try {
-        const res = await loadFormValuesRequest();
+        const res = await getFormOptionsRequest();
         setValues(res.data);
       } catch (error: any) {
-        error = error.response?.data || UnexpectedError;
-        const errorData = error.response.data as ErrorResponse<LoadFormValuesErrors>;
-        setErrors({ [errorData.type]: LoadFormValuesErrors[errorData.type] });
+        setErrors(getRequestError(error, GetFormOptionsErrors));
+      }
+
+      const searchParams = new URLSearchParams(document.location.search);
+      const formIdQ = searchParams.get("form");
+
+      if (formIdQ && !isNaN(+formIdQ)) {
+        const id = +formIdQ;
+
+        try {
+          const res = await getFormRequest(id);
+
+          reset({
+            ...res.data,
+            tons: res.data.tons.toString(),
+          });
+        } catch (error: any) {
+          setErrors(getRequestError(error, GetFormErrors));
+        }
+
+        setFormId(id);
       }
 
       setLoading(false);
     }
-    loadFormData();
+    loadFormOptions();
   }, []);
 
-  const onSubmit = handleSubmit(async (data: UploadFormBody) => {
-    setUploading(true);
+  const onSubmit = handleSubmit(async (data: PostFormBody) => {
+    setCreating(true);
 
     try {
-      await uploadFormRequest(data);
-      navigate(ROUTES.DASHBOARD);
+      if (formId) {
+        await putFormRequest(formId, data);
+        navigate(ROUTES.ADMIN_FORMS);
+      } else {
+        await postFormRequest(data);
+        navigate(ROUTES.DASHBOARD);
+      }
     } catch (error: any) {
-      error = error.response?.data || UnexpectedError;
-      const errorData = error.response.data as ErrorResponse<UploadFormErrors>;
-      setErrors({ [errorData.type]: UploadFormErrors[errorData.type] });
+      setErrors(getRequestError(error, formId ? PutFormErrors : PostFormErrors));
     }
 
-    setUploading(false);
+    setCreating(false);
   });
 
   if (loading || !values) {
@@ -79,30 +103,60 @@ export default function Form() {
 
   return (
     <div className="page-container p-10 gap-y-6 items-center bg-gray-100">
+      {formId && <GoBackButton path={ROUTES.ADMIN_FORMS} />}
+
       <h1 className="text-3xl font-bold text-center">Formulario</h1>
 
       <form onSubmit={onSubmit} className="w-full max-w-[48rem] flex flex-col gap-y-8 items-center">
-        <SelectFormField<UploadFormBody> control={control} fieldName="name" label="Residuo" required="Seleccione un residuo" error={formErrors.name?.message || errors.residue} values={values.names} />
+        <SelectFormField<PostFormBody> control={control} fieldName="residue" label="Residuo" required="Seleccione un residuo" error={formErrors.residue?.message || errors.residue} values={values.residues} />
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-8">
-          <TextFormField<UploadFormBody> control={control} fieldName="tons" label="Toneladas" required="Ingrese las toneladas" error={formErrors.tons?.message} />
+          <TextFormField<PostFormBody> control={control} fieldName="tons" label="Toneladas" required="Ingrese las toneladas" error={formErrors.tons?.message} />
 
-          <SelectFormField<UploadFormBody> control={control} fieldName="container" label="Contenedor" required="Seleccione un contenedor" error={formErrors.container?.message || errors.container} values={values.containers} />
-          <SelectFormField<UploadFormBody> control={control} fieldName="area" label="Área" required="Seleccione una área" error={formErrors.area?.message || errors.area} values={values.areas} />
-          <SelectFormField<UploadFormBody> control={control} fieldName="processingStage" label="Etapa de procesamiento" required="Seleccione una etapa de procesamiento" error={formErrors.processingStage?.message || errors.processingStage} values={values.processingStages} />
+          <SelectFormField<PostFormBody> control={control} fieldName="container" label="Contenedor" required="Seleccione un contenedor" error={formErrors.container?.message || errors.container} values={values.containers} />
+          <SelectFormField<PostFormBody> control={control} fieldName="area" label="Área" required="Seleccione una área" error={formErrors.area?.message || errors.area} values={values.areas} />
+          <SelectFormField<PostFormBody> control={control} fieldName="processingStage" label="Etapa de procesamiento" required="Seleccione una etapa de procesamiento" error={formErrors.processingStage?.message || errors.processingStage} values={values.processingStages} />
 
-          <DateFormField<UploadFormBody> control={control} fieldName="entryDate" label="Fecha de entrada" required="Ingrese una fecha de entrada" error={formErrors.entryDate?.message} />
-          <DateFormField<UploadFormBody> control={control} fieldName="exitDate" label="Fecha de salida" required="Ingrese una fecha de salida" error={formErrors.exitDate?.message} />
+          <DateFormField<PostFormBody> control={control} fieldName="entryDate" label="Fecha de entrada" required="Ingrese una fecha de entrada" error={formErrors.entryDate?.message} />
+          <DateFormField<PostFormBody> control={control} fieldName="exitDate" label="Fecha de salida" required="Ingrese una fecha de salida" error={formErrors.exitDate?.message} />
 
-          <SelectFormField<UploadFormBody> control={control} fieldName="provider1" label="Razón social 1" required="Seleccione una razón social 1" error={formErrors.provider1?.message || errors.provider1} values={values.providers1} />
-          <SelectFormField<UploadFormBody> control={control} fieldName="provider2" label="Razón social 2" required="Seleccione una razón social 2" error={formErrors.provider2?.message || errors.provider2} values={values.providers2} />
-            <SelectFormField<UploadFormBody> control={control} fieldName="sctCode" label="Código SCT" required="Seleccione un código SCT" error={formErrors.sctCode?.message || errors.sctCode} values={values.sctCodes} />
-          <SelectFormField<UploadFormBody> control={control} fieldName="manager" label="Responsable" required="Seleccione a un responsable" error={formErrors.manager?.message || errors.manager} values={values.managers} />
+          <SelectFormField<PostFormBody> control={control} fieldName="provider1" label="Razón social 1" required="Seleccione una razón social 1" error={formErrors.provider1?.message || errors.provider1} values={values.providers1} />
+          <SelectFormField<PostFormBody> control={control} fieldName="provider2" label="Razón social 2" required="Seleccione una razón social 2" error={formErrors.provider2?.message || errors.provider2} values={values.providers2} />
+          <SelectFormField<PostFormBody> control={control} fieldName="sctCode" label="Código SCT" required="Seleccione un código SCT" error={formErrors.sctCode?.message || errors.sctCode} values={values.sctCodes} />
+          <SelectFormField<PostFormBody> control={control} fieldName="manager" label="Responsable" required="Seleccione a un responsable" error={formErrors.manager?.message || errors.manager} values={values.managers} />
         </div>
 
-        <button type="submit" className="mt-2 w-fit px-4 py-2.5 rounded-md button-component">
-          Crear Registro
-          {uploading && <LoadingIcon />}
-        </button>
+        <div className="mt-2 flex flex-col-reverse md:flex-row justify-center items-center gap-x-6 gap-y-4">
+          {
+            formId ?
+              <>
+                <button type="button" className="w-fit px-4 py-2.5 rounded-md button-component"
+                  onClick={async () => {
+                    setDeleting(true);
+                    try {
+                      await deleteFormRequest(formId);
+                      navigate(ROUTES.ADMIN_FORMS);
+                    } catch (error: any) {
+                      setErrors(getRequestError(error, DeleteFormErrors));
+                    }
+                    setDeleting(false);
+                  }}
+                >
+                  Eliminar registro
+                  {deleting && <LoadingIcon />}
+                </button>
+
+                <button type="submit" className="w-fit px-4 py-2.5 rounded-md button-component">
+                  Actualizar registro
+                  {creating && <LoadingIcon />}
+                </button>
+              </>
+              :
+              <button type="submit" className="w-fit px-4 py-2.5 rounded-md button-component">
+                Crear registro
+                {creating && <LoadingIcon />}
+              </button>
+          }
+        </div>
       </form>
     </div>
   );

@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
-import ROUTES from "@constants/routes";
 import { CornerUpLeft } from "lucide-react";
 
-const GoBackButton = () => {
+type GoBackButtonProps = {
+  path: string;
+};
+
+const GoBackButton = (props: GoBackButtonProps) => {
   return(
-    <Link to={ROUTES.ADMIN_DASHBOARD}  
+    <Link to={props.path}  
       className="absolute top-10 right-10
       p-2 rounded-full border-2 border-black
       bg-black hover:bg-white 

@@ -101,7 +101,7 @@ const ProcessingStages = () => {
 
   return (
     <div className="page-container form-container">
-      <GoBackButton />
+      <GoBackButton path={ROUTES.ADMIN_DASHBOARD} />
 
       <h1 className="form-title">Etapa de procesamiento</h1>
 
