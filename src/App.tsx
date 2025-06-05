@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ROUTES from "@constants/routes";
 import { AuthProvider } from "@contexts/AuthContext";
 import { DashboardProvider } from "@contexts/DashboardContext";
+import { AdminUsersProvider } from "@contexts/AdminUsersContext";
 import { AdminFormsProvider } from "@contexts/AdminFormsContext";
 
 import ProtectedRoute from "@components/ProtectedRoute";
@@ -15,6 +16,8 @@ import Dashboard from "@pages/Dashboard";
 
 import AdminDashboard from "@pages/AdminDashboard";
 import AdminUsers from "@pages/AdminUsers";
+import AdminUserForm from "@pages/AdminUserForm";
+import AdminChangePassword from "@pages/AdminChangePassword";
 import AdminForms from "@pages/AdminForms";
 import Residues from "@pages/resource-pages/Residues";
 import Containers from "@pages/resource-pages/Containers";
@@ -46,11 +49,16 @@ function App() {
               <Route element={<SidebarLayout />}>
                 <Route path={ROUTES.ADMIN_DASHBOARD} element={<AdminDashboard />} />
 
-                <Route path={ROUTES.ADMIN_USERS_BASE} element={<AdminUsers />} />
+                <Route element={<AdminUsersProvider />}>
+                  <Route path={ROUTES.ADMIN_USERS} element={<AdminUsers />} />
+                </Route>
+
+                <Route path={ROUTES.ADMIN_USER_FORM} element={<AdminUserForm />} />
+                <Route path={ROUTES.ADMIN_CHANGE_PASSWORD_BASE} element={<AdminChangePassword />} />
 
                 <Route element={<AdminFormsProvider />}>
                   <Route path={ROUTES.ADMIN_FORMS} element={<AdminForms />} />
-                </Route>                
+                </Route>      
 
                 <Route path={ROUTES.ADMIN_RESIDUES} element={<Residues />} />
                 <Route path={ROUTES.ADMIN_CONTAINERS} element={<Containers />} />

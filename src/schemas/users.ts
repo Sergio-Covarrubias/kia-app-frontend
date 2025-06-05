@@ -7,19 +7,49 @@ export const PostUserErrors: PostUserErrors = {
   corporateId: "Ingresa el ID corporativo",
 };
 
-export type PutUserBody = {
-  corporateId: string;
-  password: string;
+export type PatchUserBody = {
+  isAdmin: boolean
 };
-export type PutUserErrors = { nonExistingId?: string; };
-export const PutUserErrors: PutUserErrors = {
-  nonExistingId: "El usuario no existe",
+export type PatchUserErrors = { nonExisting?: string; };
+export const PatchUserErrors: PatchUserErrors = {
+  nonExisting: "El usuario no existe",
 };
 
-export type DeleteUserBody = {
-  corporateId: string;
+export type PatchUserPasswordBody = {
+  password: string;
 };
-export type DeleteUserErrors = { nonExistingId?: string; };
+export type PatchUserPasswordErrors = { nonExisting?: string; };
+export const PatchUserPasswordErrors: PatchUserPasswordErrors = {
+  nonExisting: "El usuario no existe",
+};
+
+export type DeleteUserErrors = { nonExisting?: string; };
 export const DeleteUserErrors: DeleteUserErrors = {
-  nonExistingId: "El usuario no existe",
+  nonExisting: "El usuario no existe",
+};
+
+export type GetUsersResponse = {
+  users: {
+    id: number;
+    corporateId: string;
+    isAdmin: boolean;
+  }[];
+  totalPages: number;
+};
+export type GetUsersErrors = {
+  page?: string;
+  limit?: string;
+};
+export const GetUsersErrors: GetUsersErrors = {
+  page: 'El número de página debe de ser mayor a 0',
+  limit: 'La cantidad de resultados debe de ser mayor a cero',
+};
+
+export type GetUserResponse = {
+  corporateId: string;
+  isAdmin: boolean;
+};
+export type GetUserErrors = { nonExisting?: string; };
+export const GetUserErrors: GetUserErrors = {
+  nonExisting: "No existe un usuario con el ID dado",
 };
