@@ -5,21 +5,25 @@ import ROUTES from "@constants/routes";
 
 import {
   CornerUpLeft,
-  UserCog, FilePen, FileCog,
-  UserPlus, UserMinus, UserPen,
+  UserPlus, UserCog, FilePen, FileCog,
   Radiation, Box, LandPlot, Replace, Heading1, Barcode, Heading2, SquareUser
 } from "lucide-react"
 
-type TabOptions = "main" | "users" | "form";
+type TabOptions = "main" | "form";
 
 const AdminDashboard = () => {
   const [tab, setTab] = useState<TabOptions>("main");
 
   const MAIN_SECTIONS: SectionContainerProps[] = [
     {
+      Icon: UserPlus,
+      name: "Añadir usuario",
+      path: ROUTES.ADMIN_USER_FORM,
+    },
+    {
       Icon: UserCog,
       name: "Editar usuarios",
-      action: () => setTab("users"),
+      path: ROUTES.ADMIN_USERS,
     },
     {
       Icon: FilePen,
@@ -30,29 +34,6 @@ const AdminDashboard = () => {
       Icon: FileCog,
       name: "Editar opciones de formulario",
       action: () => setTab("form"),
-    },
-  ];
-
-  const USERS_SECTION: SectionContainerProps[] = [
-    {
-      Icon: UserPlus,
-      name: "Agregar usuario",
-      path: ROUTES.ADMIN_USERS("create"),
-    },
-    {
-      Icon: UserPen,
-      name: "Modificar usuario",
-      path: ROUTES.ADMIN_USERS("update"),
-    },
-    {
-      Icon: UserMinus,
-      name: "Eliminar usuario",
-      path: ROUTES.ADMIN_USERS("delete"),
-    },
-    {
-      Icon: CornerUpLeft,
-      name: "Regresar",
-      action: () => setTab("main"),
     },
   ];
 
@@ -108,9 +89,6 @@ const AdminDashboard = () => {
   switch (tab) {
     case "main":
       tabs = MAIN_SECTIONS;
-      break;
-    case "users":
-      tabs = USERS_SECTION;
       break;
     case "form":
       tabs = FORM_SECTIONS;

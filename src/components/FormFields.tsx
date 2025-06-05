@@ -1,4 +1,5 @@
 import { Controller, Control, FieldValues, Path } from "react-hook-form";
+import classNames from "classnames";
 import { Calendar, ChevronDown } from "lucide-react";
 
 type BaseFormFieldProps<T extends FieldValues> = {
@@ -9,7 +10,7 @@ type BaseFormFieldProps<T extends FieldValues> = {
   error?: string;
 };
 
-type TextFormFieldProps<T extends FieldValues> = BaseFormFieldProps<T> & { type?: string; required?: string; };
+type TextFormFieldProps<T extends FieldValues> = BaseFormFieldProps<T> & { type?: string; required?: string; readonly?: boolean; };
 export const TextFormField = <T extends FieldValues,>(props: TextFormFieldProps<T>) => {
   return (
     <Controller
@@ -22,7 +23,14 @@ export const TextFormField = <T extends FieldValues,>(props: TextFormFieldProps<
           <input
             {...field}
             type={props.type || "text"}
-            className="w-full p-2 text-md border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            readOnly={props.readonly}
+            className={classNames(
+              "w-full p-2 text-md border border-gray-300 rounded-md",
+              {
+                "focus:ring-2 focus:ring-blue-500" : !props.readonly,
+                "bg-gray-200 cursor-not-allowed": props.readonly, 
+              }
+            )}
           />
 
           {props.error && <span className="absolute left-0 -bottom-6 text-red-500 text-sm">{props.error}</span>}
