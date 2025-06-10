@@ -16,6 +16,9 @@ interface AdminFormsContextType {
   query: string;
   setQuery: (query: string) => void;
 
+  startDate: string;
+  setStartDate: (startDate: string) => void;
+
   reloadForms: () => Promise<void>;
 }
 
@@ -29,12 +32,13 @@ export const AdminFormsProvider: React.FC<AdminFromsProviderProps> = () => {
   const LIMIT = 8;
   const [page, setPage] = useState<number>(1);
   const [query, setQuery] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
 
   const [formData, setFormData] = useState<GetFormsResponse | null>(null);
 
   const reloadForms = async () => {
     try {
-      const res = await getFormsRequest(query, page, LIMIT);
+      const res = await getFormsRequest(query, page, LIMIT, startDate);
       setFormData(res.data);
     } catch (error: any) {
       throw error.response?.data || UnexpectedError;
@@ -51,7 +55,7 @@ export const AdminFormsProvider: React.FC<AdminFromsProviderProps> = () => {
     }, 1000);
 
     return () => clearTimeout(getData);
-  }, [page]);
+  }, [page, startDate]);
 
   useEffect(() => {
     setLoading(true);
@@ -74,6 +78,9 @@ export const AdminFormsProvider: React.FC<AdminFromsProviderProps> = () => {
 
       query,
       setQuery,
+
+      startDate,
+      setStartDate,
 
       reloadForms,
     }}>

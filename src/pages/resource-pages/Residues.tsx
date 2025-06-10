@@ -150,7 +150,6 @@ const Residues = () => {
 
             if (index !== undefined) {
               const residue = residueData[index];
-              console.log(residue);
               setValue("residue", {
                 name: residue.name,
                 translatedName: residue.translatedName,

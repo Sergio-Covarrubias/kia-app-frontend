@@ -72,7 +72,7 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = () => {
       const res = await getDashboardDataRequest({ timeframe, startDate });
       setValues(res.data);
     } catch (error: any) {
-      getRequestError(error, DashboardDataErrors);
+      setErrors(getRequestError(error, DashboardDataErrors));
     }
 
     setLoadingValues(false);

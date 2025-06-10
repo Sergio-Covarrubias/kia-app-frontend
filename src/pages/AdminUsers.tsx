@@ -1,114 +1,108 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
 import ROUTES from "@constants/routes";
-import { ErrorResponse } from "@schemas/base-errors";
-import UnexpectedError from "@constants/unexpected-error";
-import { PostUserErrors, PutUserErrors, DeleteUserErrors } from "@schemas/users";
 
-import { createUserRequest, putUserRequest, deleteUserRequest } from "@api/users";
+import { useAuth } from "@contexts/AuthContext";
+import { useAdminUsers } from "@contexts/AdminUsersContext";
 
-import { TextFormField, BooleanFormField } from "@components/FormFields";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import LoadingIcon from "@components/LoadingIcon";
-import GoBackButton from "@components/admin-dashboard/GoBackButton";
-
-type AdminUsersFields = {
-  corporateId: string;
-  password: string;
-  isAdmin: boolean;
-};
-
-type FieldErrors = PostUserErrors & PutUserErrors & DeleteUserErrors;
 
 const AdminUsers = () => {
   const navigate = useNavigate();
 
-  const { control, handleSubmit, formState: { errors: formErrors } } = useForm<AdminUsersFields>({
-    defaultValues: {
-      corporateId: "",
-      password: "",
-      isAdmin: false,
-    },
-  });
+  const { user: userData } = useAuth();
+  const { usersData, loading, page, setPage, query, setQuery } = useAdminUsers();
 
-  const [searchParams] = useSearchParams();
-  const action = searchParams.get("action");
-  useEffect(() => {
-    if (action !== "create" && action !== "update" && action !== "delete") {
-      navigate(ROUTES.ADMIN_DASHBOARD);
-    }
-  }, []);
+  const hasLoadedData = !loading && usersData;
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<FieldErrors>({});
-
-  const onSubmit = handleSubmit(async (data: AdminUsersFields) => {
-    setErrors({});
-    setLoading(true);
-
-    try {
-      if (action === "create") {
-        await createUserRequest(data);
-      } else if (action === "update") {
-        await putUserRequest(data);
-      } else {
-        await deleteUserRequest({ corporateId: data.corporateId });
-      }
-
-      navigate(ROUTES.ADMIN_DASHBOARD);
-    } catch (error: any) {
-      console.log(error);
-      
-      error = error.response?.data || UnexpectedError;
-
-      if (action === "create") {
-        const errorData = error as ErrorResponse<PostUserErrors>;
-        setErrors({ [errorData.type]: PostUserErrors[errorData.type] });
-      } else if (action === "update") {
-        const errorData = error as ErrorResponse<PutUserErrors>;
-        setErrors({ [errorData.type]: PutUserErrors[errorData.type] });
-      } else {
-        const errorData = error as ErrorResponse<DeleteUserErrors>;
-        setErrors({ [errorData.type]: DeleteUserErrors[errorData.type] });
-      }
-    }
-
-    setLoading(false);
-  });
+  const ROW_CLASSNAME = " py-2 flex items-center border-b-2 border-black font-medium text-center text-xs md:text-sm odd:bg-white even:bg-gray-100 ";
 
   return (
-    <div className="page-container form-container">
-      <GoBackButton path={ROUTES.ADMIN_DASHBOARD} />
+    <div className="page-container md:p-20 justify-center items-center">
+      <div className="w-full py-8 flex flex-col gap-y-5 flex-1 bg-white rounded-lg">
+        {/* Title and search bar */}
+        <div className="px-10 flex flex-col md:flex-row gap-4 justify-between items-center">
+          <h1 className="text-left text-3xl font-semibold">Usuarios</h1>
 
-      <h1 className="form-title">{action === "create" ? "Crear" : (action === "update" ? "Modificar" : "Eliminar")} Usuario</h1>
-
-      <form onSubmit={onSubmit} className="form">
-        <div className={classNames("w-full grid grid-cols-1 gap-y-8 gap-x-8", { "md:grid-cols-2": action !== "delete" })}>
-          <TextFormField<AdminUsersFields> control={control} fieldName="corporateId" label="ID corporativo" required="Ingresa el nombre del usuario"
-            error={formErrors.corporateId?.message || errors.corporateId || errors.nonExistingId}
-          />
-
-          {
-            action !== "delete" &&
-            <TextFormField<AdminUsersFields> control={control} fieldName="password" label="Contraseña" required="Ingresa la contraseña"
-              error={formErrors.password?.message}
-              type="password"
+          <div className="relative">
+            <input
+              type="text" placeholder="Ingresa un ID"
+              className="pl-5 pr-9 py-1.5 border border-gray-400 rounded-full focus:ring-2 focus:ring-blue-500"
+              value={query} onChange={(e) => setQuery(e.target.value)}
             />
-          }
+            <Search className="absolute top-2 right-3 size-5 text-black" />
+          </div>
         </div>
 
-        {
-          action !== "delete" &&
-          <BooleanFormField<AdminUsersFields> control={control} fieldName="isAdmin" label="¿Hacer al usuario admin?" />
-        }
+        <div className="flex-1 flex flex-col gap-y-5 justify-between">
+          {/* Form data */}
+          <div className="flex flex-col">
+            <div className={ROW_CLASSNAME}>
+              <p className="flex-1/3">ID corporativo</p>
+              <p className="flex-1/3">Permisos</p>
+              <p className="flex-1/3"></p>
+            </div>
 
-        <button type="submit" className="px-4 py-2 rounded-md button-component">
-          {action === "create" ? "Crear" : (action === "update" ? "Actualizar" : "Eliminar")} 
-          {loading && <LoadingIcon color="text-white" />}
-        </button>
-      </form>
+            {
+              !hasLoadedData ?
+                <div className="my-10 flex gap-x-3 justify-center items-center font-semibold text-lg">
+                  Loading
+                  <LoadingIcon />
+                </div>
+                :
+                usersData.users.map((user, index: number) => (
+                  <Link to={user.id !== userData?.id ? ROUTES.ADMIN_USER_FORM_EDIT(user.id) : ""} key={index}
+                    className={classNames(ROW_CLASSNAME, "hover:bg-gray-200 transition duration-150 ease-in-out",
+                      {
+                        "cursor-pointer": user.id !== userData?.id,
+                        "cursor-not-allowed": user.id === userData?.id,
+                      }
+                    )}
+                  >
+                    <p className="flex-1/3">{user.corporateId}</p>
+                    <p className="flex-1/3">{user.isAdmin ? "Administrador" : "Regular"}</p>
+                    <div className="flex-1/3">
+                      <button className="px-3 py-1 bg-black text-white text-xs font-medium rounded-lg pointer- cursor-pointer"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate(ROUTES.ADMIN_CHANGE_PASSWORD(user.id));
+                        }}
+                      >
+                        Cambiar contraseña
+                      </button>
+                    </div>
+                  </Link>
+                ))
+            }
+          </div>
+
+          {/* Pagination arrows */}
+          {
+            hasLoadedData &&
+            <div className="flex justify-center">
+              <span className="relative min-w-12 text-center font-semibold text-lg w-fit select-none">
+                {page > 1 &&
+                  <ChevronLeft
+                    className="absolute inset-y-0 right-10 size-7 text-black cursor-pointer"
+                    onClick={() => setPage(page - 1)}
+                  />
+                }
+
+                {page}
+
+                {page < usersData.totalPages &&
+                  <ChevronRight
+                    className="absolute inset-y-0 left-10 size-7 text-black cursor-pointer"
+                    onClick={() => setPage(page + 1)}
+                  />
+                }
+              </span>
+            </div>
+          }
+        </div>
+      </div>
     </div>
   );
 };

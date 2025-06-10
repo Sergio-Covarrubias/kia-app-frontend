@@ -64,7 +64,7 @@ const Login: React.FC = () => {
   return (
     <div className="flex h-screen">
       {/* Columna izquierda con la imagen y el texto */}
-      <div className="flex-1 flex flex-col justify-center items-center bg-black text-white p-5">
+      <div className="flex-1 hidden md:flex flex-col justify-center items-center bg-black text-white p-5">
         <img src={whiteLogo} alt="KIA Logo" className="max-w-md" />
         <div className="text-center">
           <h2 className="text-xl font-semibold">Portal de registro de residuos peligrosos</h2>
@@ -74,7 +74,7 @@ const Login: React.FC = () => {
       </div>
 
       {/* Línea vertical divisoria entre las dos secciones */}
-      <div className="w-[2px] bg-white h-full"></div>
+      <div className="w-[2px]  hidden md:block bg-white h-full"></div>
 
       {/* Columna derecha con el formulario de inicio de sesión */}
       <div className="flex-1 flex justify-center items-center p-5">

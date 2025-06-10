@@ -19,6 +19,7 @@ type Provider2Fields = {
   provider2: {
     name: string;
     authorizationCode: string;
+    address: string;
   };
 };
 
@@ -40,6 +41,7 @@ const Providers2 = () => {
       provider2: {
         name: "",
         authorizationCode: "",
+        address: "",
       },
     },
   });
@@ -81,6 +83,7 @@ const Providers2 = () => {
       const provider2 = {
         name: data.provider2.name,
         authorizationCode: data.provider2.authorizationCode,
+        address: data.provider2.address,
       };
 
       if (creatingNewResource) {
@@ -123,6 +126,7 @@ const Providers2 = () => {
               setValue("provider2", {
                 name: provider2.name,
                 authorizationCode: provider2.semarnatCode,
+                address: provider2.address,
               });
             } else {
               reset();
@@ -150,6 +154,11 @@ const Providers2 = () => {
         <TextFormField<Provider2Fields> control={control} fieldName="provider2.name" label="Código de autorización"
           required="Escriba el código de autorización"
           error={formErrors.provider2?.authorizationCode?.message || errors.authorization_code || errors.nonExisting}
+        />
+
+        <TextFormField<Provider2Fields> control={control} fieldName="provider2.address" label="Domicilio"
+          required="Escriba el domicilio"
+          error={formErrors.provider2?.address?.message}
         />
 
         <button type="submit" className="px-4 py-2 rounded-md button-component">

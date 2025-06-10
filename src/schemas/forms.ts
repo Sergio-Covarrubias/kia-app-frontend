@@ -13,6 +13,7 @@ export const GetFormOptionsErrors: GetFormOptionsErrors = {};
 
 export type PostFormBody = {
   residue: string;
+  quantity: string;
   tons: string;
   container: string;
   area: string;
@@ -71,6 +72,7 @@ export const GetFormsErrors: GetFormsErrors = {
 export type GetFormResponse = {
   residue: string;
   container: string;
+  quantity: string;
   tons: number;
   area: string;
   entryDate: string;
