@@ -3,6 +3,7 @@ const ROUTES = {
   DASHBOARD: "/dashboard",
   FORM: "/form",
   FORM_EDIT: (formId: number) => `/form?form=${formId}`,
+  MANIFEST: "/manifest",
   ADMIN_DASHBOARD: "/admin/dashboard",
   ADMIN_USERS: "/admin/users",
   ADMIN_USER_FORM: "/admin/user-form",

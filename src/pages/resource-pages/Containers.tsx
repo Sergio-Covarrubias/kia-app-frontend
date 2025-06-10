@@ -18,6 +18,7 @@ import NameSelector from "@components/admin-dashboard/NameSelector";
 type ContainerFields = {
   container: {
     name: string;
+    capacity: string;
   };
 };
 
@@ -36,6 +37,7 @@ const Containers = () => {
     defaultValues: {
       container: {
         name: "",
+        capacity: "",
       },
     },
   });
@@ -76,6 +78,7 @@ const Containers = () => {
     try {
       const container = {
         name: data.container.name,
+        capacity: data.container.capacity,
       };
 
       if (creatingNewResource) {
@@ -117,6 +120,7 @@ const Containers = () => {
               const container = containerData[index];
               setValue("container", {
                 name: container.name,
+                capacity: container.capacity,
               });
             } else {
               reset();
@@ -141,8 +145,13 @@ const Containers = () => {
           }
         </div>
 
+        <TextFormField<ContainerFields> control={control} fieldName="container.capacity" label="Capacidad del contenedor"
+          required="Escriba la capacidad del contenedor"
+          error={formErrors.container?.capacity?.message}
+        />
+
         <button type="submit" className="px-4 py-2 rounded-md button-component">
-          {creatingNewResource ? "Crear" : "Actualizar"} 
+          {creatingNewResource ? "Crear" : "Actualizar"}
           {uploading && <LoadingIcon color="text-white" />}
         </button>
       </form>

@@ -19,6 +19,8 @@ type Provider1Fields = {
   provider1: {
     name: string;
     semarnatCode: string;
+    address: string;
+    phone: string;
   };
 };
 
@@ -40,6 +42,8 @@ const Providers1 = () => {
       provider1: {
         name: "",
         semarnatCode: "",
+        address: "",
+        phone: "",
       },
     },
   });
@@ -81,6 +85,8 @@ const Providers1 = () => {
       const provider1 = {
         name: data.provider1.name,
         semarnatCode: data.provider1.semarnatCode,
+        address: data.provider1.address,
+        phone: data.provider1.phone,
       };
 
       if (creatingNewResource) {
@@ -123,6 +129,8 @@ const Providers1 = () => {
               setValue("provider1", {
                 name: provider1.name,
                 semarnatCode: provider1.semarnatCode,
+                address: provider1.address,
+                phone: provider1.phone,
               });
             } else {
               reset();
@@ -150,6 +158,16 @@ const Providers1 = () => {
         <TextFormField<Provider1Fields> control={control} fieldName="provider1.name" label="Código de SEMARTNAT"
           required="Escriba el código de SEMARTNAT"
           error={formErrors.provider1?.semarnatCode?.message || errors.semarnat_code || errors.nonExisting}
+        />
+
+        <TextFormField<Provider1Fields> control={control} fieldName="provider1.address" label="Domicilio"
+          required="Escriba el domicilio"
+          error={formErrors.provider1?.address?.message}
+        />
+
+        <TextFormField<Provider1Fields> control={control} fieldName="provider1.phone" label="Número de teléfono"
+          required="Escriba el número de teléfono"
+          error={formErrors.provider1?.phone?.message}
         />
 
         <button type="submit" className="px-4 py-2 rounded-md button-component">

@@ -20,6 +20,7 @@ export default function Form() {
   const { control, handleSubmit, formState: { errors: formErrors }, reset } = useForm<PostFormBody>({
     defaultValues: {
       residue: "",
+      quantity: "",
       tons: "",
       container: "",
       area: "",
@@ -65,6 +66,7 @@ export default function Form() {
 
           reset({
             ...res.data,
+            quantity: res.data.quantity.toString(),
             tons: res.data.tons.toString(),
           });
         } catch (error: any) {
@@ -102,7 +104,7 @@ export default function Form() {
   }
 
   return (
-    <div className="page-container p-10 gap-y-6 items-center bg-gray-100">
+    <div className="page-container p-10 gap-y-6 items-center">
       {formId && <GoBackButton path={ROUTES.ADMIN_FORMS} />}
 
       <h1 className="text-3xl font-bold text-center">Formulario</h1>
@@ -110,20 +112,23 @@ export default function Form() {
       <form onSubmit={onSubmit} className="w-full max-w-[48rem] flex flex-col gap-y-8 items-center">
         <SelectFormField<PostFormBody> control={control} fieldName="residue" label="Residuo" required="Seleccione un residuo" error={formErrors.residue?.message || errors.residue} values={values.residues} />
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-8">
-          <TextFormField<PostFormBody> control={control} fieldName="tons" label="Toneladas" required="Ingrese las toneladas" error={formErrors.tons?.message} />
+          <TextFormField<PostFormBody> control={control} fieldName="quantity" label="Unidades" required="Ingrese las unidades" error={formErrors.quantity?.message} type="number" />
+          <TextFormField<PostFormBody> control={control} fieldName="tons" label="Toneladas" required="Ingrese las toneladas" error={formErrors.tons?.message} type="number" />
 
           <SelectFormField<PostFormBody> control={control} fieldName="container" label="Contenedor" required="Seleccione un contenedor" error={formErrors.container?.message || errors.container} values={values.containers} />
           <SelectFormField<PostFormBody> control={control} fieldName="area" label="Área" required="Seleccione una área" error={formErrors.area?.message || errors.area} values={values.areas} />
-          <SelectFormField<PostFormBody> control={control} fieldName="processingStage" label="Etapa de procesamiento" required="Seleccione una etapa de procesamiento" error={formErrors.processingStage?.message || errors.processingStage} values={values.processingStages} />
+
 
           <DateFormField<PostFormBody> control={control} fieldName="entryDate" label="Fecha de entrada" required="Ingrese una fecha de entrada" error={formErrors.entryDate?.message} />
           <DateFormField<PostFormBody> control={control} fieldName="exitDate" label="Fecha de salida" required="Ingrese una fecha de salida" error={formErrors.exitDate?.message} />
 
+          <SelectFormField<PostFormBody> control={control} fieldName="processingStage" label="Etapa de procesamiento" required="Seleccione una etapa de procesamiento" error={formErrors.processingStage?.message || errors.processingStage} values={values.processingStages} />
           <SelectFormField<PostFormBody> control={control} fieldName="provider1" label="Razón social 1" required="Seleccione una razón social 1" error={formErrors.provider1?.message || errors.provider1} values={values.providers1} />
+          
           <SelectFormField<PostFormBody> control={control} fieldName="provider2" label="Razón social 2" required="Seleccione una razón social 2" error={formErrors.provider2?.message || errors.provider2} values={values.providers2} />
           <SelectFormField<PostFormBody> control={control} fieldName="sctCode" label="Código SCT" required="Seleccione un código SCT" error={formErrors.sctCode?.message || errors.sctCode} values={values.sctCodes} />
-          <SelectFormField<PostFormBody> control={control} fieldName="manager" label="Responsable" required="Seleccione a un responsable" error={formErrors.manager?.message || errors.manager} values={values.managers} />
         </div>
+        <SelectFormField<PostFormBody> control={control} fieldName="manager" label="Responsable" required="Seleccione a un responsable" error={formErrors.manager?.message || errors.manager} values={values.managers} />
 
         <div className="mt-2 flex flex-col-reverse md:flex-row justify-center items-center gap-x-6 gap-y-4">
           {
