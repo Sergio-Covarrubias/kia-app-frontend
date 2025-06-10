@@ -13,6 +13,7 @@ import SidebarLayout from "@layouts/SidebarLayout";
 import Login from "@pages/Login";
 import Form from "@pages/Form";
 import Dashboard from "@pages/Dashboard";
+import Manifest from "@pages/Manifest";
 
 import AdminDashboard from "@pages/AdminDashboard";
 import AdminUsers from "@pages/AdminUsers";
@@ -42,6 +43,7 @@ function App() {
                 <Route element={<DashboardProvider />}>
                   <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
                 </Route>
+                <Route path={ROUTES.MANIFEST} element={<Manifest />} />
               </Route>
             </Route>
 

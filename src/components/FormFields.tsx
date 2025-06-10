@@ -10,13 +10,16 @@ type BaseFormFieldProps<T extends FieldValues> = {
   error?: string;
 };
 
-type TextFormFieldProps<T extends FieldValues> = BaseFormFieldProps<T> & { type?: string; required?: string; readonly?: boolean; };
+type TextFormFieldProps<T extends FieldValues> = BaseFormFieldProps<T> & { type?: string; required?: string; readonly?: boolean; minLength?: { value: number, message: string } };
 export const TextFormField = <T extends FieldValues,>(props: TextFormFieldProps<T>) => {
   return (
     <Controller
       control={props.control}
       name={props.fieldName}
-      rules={{ required: props.required }}
+      rules={{
+        required: props.required,
+        minLength: props.minLength,
+      }}
       render={({ field }) => (
         <div className="relative w-full mb-2">
           <label htmlFor={props.fieldName} className="text-sm mb-2">{props.label}</label>
@@ -25,10 +28,10 @@ export const TextFormField = <T extends FieldValues,>(props: TextFormFieldProps<
             type={props.type || "text"}
             readOnly={props.readonly}
             className={classNames(
-              "w-full p-2 text-md border border-gray-300 rounded-md",
+              "w-full p-2 border border-gray-300 rounded-md",
               {
-                "focus:ring-2 focus:ring-blue-500" : !props.readonly,
-                "bg-gray-200 cursor-not-allowed": props.readonly, 
+                "focus:ring-2 focus:ring-blue-500": !props.readonly,
+                "bg-gray-200 cursor-not-allowed": props.readonly,
               }
             )}
           />

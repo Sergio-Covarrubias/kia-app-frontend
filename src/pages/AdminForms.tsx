@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import ROUTES from "@constants/routes";
 import { useAdminForms } from "@contexts/AdminFormsContext";
 
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import LoadingIcon from "@components/LoadingIcon";
 
 const AdminForms = () => {
-  const { formData, loading, page, setPage, query, setQuery } = useAdminForms();
+  const { formData, loading, page, setPage, query, setQuery, startDate, setStartDate } = useAdminForms();
 
   const hasLoadedData = !loading && formData;
 
@@ -19,6 +19,19 @@ const AdminForms = () => {
         {/* Title and search bar */}
         <div className="px-10 flex flex-col md:flex-row gap-4 justify-between items-center">
           <h1 className="text-left text-3xl font-semibold">Formularios</h1>
+
+          <div className="flex flex-col gap-y-1">
+            <p className="text-center text-sm font-medium">Buscar a partir de:</p>
+            <div className="relative flex justify-center items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:outline-none">
+              <input
+                type="date"
+                className="text-sm cursor-pointer py-3 pl-3 pr-5"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+              />
+              <Calendar className="size-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+          </div>
 
           <div className="relative">
             <input

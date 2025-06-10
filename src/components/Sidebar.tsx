@@ -8,6 +8,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   FilePen,
+  Newspaper,
   GraduationCap,
   ShieldUser,
   LogOut
@@ -29,6 +30,11 @@ const Sidebar = () => {
       icon: FilePen,
       name: "Formulario",
       link: ROUTES.FORM,
+    },
+    {
+      icon: Newspaper,
+      name: "Generar manifesto",
+      link: ROUTES.MANIFEST,
     },
     {
       icon: GraduationCap,

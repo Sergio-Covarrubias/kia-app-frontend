@@ -109,6 +109,10 @@ const AdminUserForm = () => {
             !userId &&
             <div className="flex-1">
               <TextFormField<AdminUserFormFields> control={control} fieldName="password" label="Contraseña" required="Ingresa la contraseña"
+                minLength={{
+                  value: 8,
+                  message: "La contraseña debe tener al menos 8 caracteres.",
+                }}
                 error={formErrors.password?.message}
                 type="password"
               />
